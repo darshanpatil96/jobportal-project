@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Edit Application{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto py-10">
+  <h1 class="text-2xl font-bold mb-4 text-slate-800">Edit Application</h1>
+  <p class="text-sm text-slate-600 mb-4">
+    {{ application.job.title }} at {{ application.job.company }}
+  </p>
+
+  <form method="post" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="px-4 py-2 rounded bg-blue-600 text-white">Save changes</button>
+    <a href="{% url 'my_applications' %}" class="ml-3 text-sm text-slate-600">Cancel</a>
+  </form>
+</div>
+{% endblock %}

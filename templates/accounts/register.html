@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="relative">
+  <div class="fixed inset-0 bg-[url('https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg')] bg-cover bg-center"></div>
+  <div class="fixed inset-0 bg-gradient-to-b from-black/60 via-slate-900/65 to-indigo-950/75"></div>
+  <div class="relative z-10 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md bg-slate-900/70 text-slate-100 backdrop-blur-xl border border-slate-800 shadow-2xl rounded-3xl p-6">
+    <div class="flex items-center justify-between mb-4">
+      <div class="inline-flex items-center rounded-full bg-slate-800/70 p-1 text-sm">
+        <span class="px-3 py-1 rounded-full bg-slate-700/80">Sign up</span>
+        <a href="{% url 'login' %}" class="px-3 py-1 text-slate-300 hover:text-white">Sign in</a>
+      </div>
+      <a href="{% url 'home' %}" class="text-slate-400 hover:text-white">✕</a>
+    </div>
+
+    <h1 class="text-xl font-semibold mb-6">Create an account</h1>
+
+    {% if form.non_field_errors %}
+      <div class="mb-4 text-sm text-red-300 bg-red-900/30 border border-red-800 rounded-lg p-3">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <form method="POST" class="space-y-4">
+      {% csrf_token %}
+
+      <div class="grid grid-cols-1 gap-4">
+        <div>
+          <label for="id_username" class="block text-xs font-medium text-slate-300 mb-1">Username</label>
+          <div class="relative">
+            <input id="id_username" name="username" type="text" autocomplete="username"
+                   value="{{ form.username.value|default_if_none:'' }}"
+                   placeholder="Enter your username"
+                   class="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+          {% if form.errors.username %}
+            <p class="mt-1 text-xs text-red-300">{{ form.errors.username|striptags }}</p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label for="id_email" class="block text-xs font-medium text-slate-300 mb-1">Email</label>
+          <div class="relative">
+            <span class="absolute left-3 top-2.5 text-slate-400">✉️</span>
+            <input id="id_email" name="email" type="email" autocomplete="email"
+                   value="{{ form.email.value|default_if_none:'' }}"
+                   placeholder="Enter your email"
+                   class="w-full rounded-xl border border-slate-700 bg-slate-800/60 pl-9 pr-3 py-2 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+          {% if form.errors.email %}
+            <p class="mt-1 text-xs text-red-300">{{ form.errors.email|striptags }}</p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label for="id_password1" class="block text-xs font-medium text-slate-300 mb-1">Password</label>
+          <div class="relative">
+            <input id="id_password1" name="password1" type="password" autocomplete="new-password"
+                   placeholder="Create a password"
+                   class="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2 pr-12 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <button type="button" id="togglePwd1" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs px-2">Show</button>
+          </div>
+          {% if form.errors.password1 %}
+            <p class="mt-1 text-xs text-red-300">{{ form.errors.password1|striptags }}</p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label for="id_password2" class="block text-xs font-medium text-slate-300 mb-1">Confirm password</label>
+          <div class="relative">
+            <input id="id_password2" name="password2" type="password" autocomplete="new-password"
+                   placeholder="Repeat your password"
+                   class="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2 pr-12 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <button type="button" id="togglePwd2" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs px-2">Show</button>
+          </div>
+          {% if form.errors.password2 %}
+            <p class="mt-1 text-xs text-red-300">{{ form.errors.password2|striptags }}</p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-3">I am a</label>
+          <div class="space-y-2">
+            {% for value, label in form.role.field.choices %}
+              <div class="flex items-center">
+                <input type="radio" id="id_role_{{ forloop.counter }}" name="role" value="{{ value }}"
+                       {% if form.role.value == value %}checked{% endif %} class="rounded border-slate-600 text-blue-500 focus:ring-blue-500 cursor-pointer" />
+                <label for="id_role_{{ forloop.counter }}" class="ml-2 text-sm text-slate-100 cursor-pointer">{{ label }}</label>
+              </div>
+            {% endfor %}
+          </div>
+          {% if form.errors.role %}
+            <p class="mt-1 text-xs text-red-300">{{ form.errors.role|striptags }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <button type="submit" class="w-full rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium py-2.5 hover:from-blue-600 hover:to-indigo-600 shadow">
+        Create an account
+      </button>
+
+      <div class="text-center text-xs text-slate-400">OR SIGN IN WITH</div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <button type="button" class="rounded-xl bg-slate-800/60 border border-slate-700 py-2 text-slate-100">Google</button>
+        <button type="button" class="rounded-xl bg-slate-800/60 border border-slate-700 py-2 text-slate-100">Apple</button>
+      </div>
+
+      <p class="text-center text-xs text-slate-400 mt-3">By creating an account, you agree to our Terms & Service</p>
+    </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const t1 = document.getElementById('togglePwd1');
+  const t2 = document.getElementById('togglePwd2');
+  const p1 = document.getElementById('id_password1');
+  const p2 = document.getElementById('id_password2');
+  if (t1 && p1) {
+    t1.addEventListener('click', function(){
+      const s = p1.type === 'password';
+      p1.type = s ? 'text' : 'password';
+      this.textContent = s ? 'Hide' : 'Show';
+    });
+  }
+  if (t2 && p2) {
+    t2.addEventListener('click', function(){
+      const s = p2.type === 'password';
+      p2.type = s ? 'text' : 'password';
+      this.textContent = s ? 'Hide' : 'Show';
+    });
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Companies{% endblock %}
+{% block content %}
+<div class="-mx-6 px-6 py-12 min-h-[70vh] bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-slate-900">Discover Companies</h1>
+      <p class="text-slate-600 mt-2">Explore employers hiring across roles and locations</p>
+    </div>
+
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      {% for employer in employers %}
+        <a href="{% url 'company_detail' employer.id %}" class="group block h-full">
+          <div class="h-full rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center text-center">
+            {% if employer.company_logo %}
+              <img src="{{ employer.company_logo.url }}" alt="{{ employer.company_name }}" class="w-20 h-20 object-contain mb-4 rounded-lg bg-slate-50 p-2">
+            {% else %}
+              <div class="w-20 h-20 bg-slate-100 rounded-lg flex items-center justify-center mb-4 text-3xl">
+                🏢
+              </div>
+            {% endif %}
+            
+            <h3 class="font-bold text-slate-900 group-hover:text-blue-600 transition-colors mb-2">
+              {{ employer.company_name }}
+            </h3>
+            
+            {% if employer.location %}
+              <p class="text-xs text-slate-500 mb-2 flex items-center justify-center">
+                📍 {{ employer.location }}
+              </p>
+            {% endif %}
+
+            {% if employer.company_website %}
+               <p class="text-xs text-blue-500 truncate max-w-full">
+                 {{ employer.company_website|cut:"http://"|cut:"https://"|truncatechars:25 }}
+               </p>
+            {% endif %}
+          </div>
+        </a>
+      {% empty %}
+        <div class="col-span-full text-center py-12">
+          <p class="text-slate-500 text-lg">No companies found yet.</p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="mt-10 grid gap-6 md:grid-cols-2">
+      <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 class="text-lg font-semibold text-slate-900">Why companies choose JobPortal</h2>
+        <p class="text-slate-600 mt-2">Efficient hiring, quality candidates, and simple workflows.</p>
+      </article>
+      <article class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 class="text-lg font-semibold text-slate-900">Featured industries</h2>
+        <p class="text-slate-600 mt-2">Software, Data, Sales, Design, and more.</p>
+      </article>
+    </div>
+  </div>
+</div>
+{% endblock %}

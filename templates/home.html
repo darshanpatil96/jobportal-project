@@ -1,0 +1,217 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>JobPortal – Find Your Dream Job Today</title>
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="logo">JobPortal</div>
+      <nav class="nav-links">
+        <a href="{% url 'job_list' %}">Find Jobs</a>
+        <a href="{% url 'companies' %}">Companies</a>
+        <a href="{% url 'about' %}">About</a>
+      </nav>
+    </div>
+    <div class="nav-right">
+     <a href="{% url 'login' %}" class="nav-link">Sign In</a>
+     <a href="{% url 'register' %}" class="btn btn-primary">Sign Up</a>
+   </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Find Your Dream Job Today</h1>
+      <p>Connect with top employers and discover thousands of job opportunities across all industries.</p>
+
+      <!-- Search Box -->
+      <form class="search-box" method="get" action="{% url 'job_list' %}">
+        <div class="field">
+          <label>Job Title or Keywords</label>
+          <div class="input-wrapper">
+            <span class="icon">🔍</span>
+            <input type="text" name="q" placeholder="e.g. Software Engineer">
+          </div>
+        </div>
+        <div class="field">
+          <label>Location</label>
+          <div class="input-wrapper">
+            <span class="icon">📍</span>
+            <input type="text" name="location" placeholder="City, State or Remote">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-search">Search Jobs</button>
+      </form>
+
+      <!-- Popular searches -->
+      <div class="popular-searches">
+        <span>Popular searches:</span>
+        <a href="?q=Software+Engineer">Software Engineer</a>
+        <a href="?q=Product+Manager">Product Manager</a>
+        <a href="?q=Data+Scientist">Data Scientist</a>
+        <a href="?q=UX+Designer">UX Designer</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Explore -->
+  <section class="featured">
+    <div class="featured-inner">
+      <div class="featured-header">
+        <div>
+          <h2>Explore Roles</h2>
+          <p>Jump directly to popular tracks</p>
+        </div>
+      </div>
+      <div class="job-grid">
+        <a href="{% url 'job_list' %}?job_type=Internship" class="btn btn-outline full-width">Internships</a>
+        <a href="{% url 'job_list' %}?q=Fresher" class="btn btn-outline full-width">Freshers</a>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Latest Jobs -->
+  <section class="featured">
+    <div class="featured-inner">
+      <div class="featured-header">
+        <div>
+          <h2>Latest Jobs</h2>
+          <p>Fresh opportunities added recently</p>
+        </div>
+        <a href="{% url 'job_list' %}" class="btn btn-outline">View All Jobs</a>
+      </div>
+
+      <div class="job-grid">
+        {% for job in latest_jobs %}
+        <article class="job-card">
+          <div class="job-card-header">
+            <div class="job-logo">{{ job.company|slice:":2"|upper }}</div>
+          </div>
+          <h3>{{ job.title }}</h3>
+          <p class="company">{{ job.company }}</p>
+          <p class="meta"><span>📍 {{ job.location }}</span><span>🏷️ {{ job.job_type }}</span></p>
+          <p class="summary">{{ job.description|truncatechars:140 }}</p>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="{% url 'job_detail' job.id %}" class="btn btn-outline">View Details</a>
+            <a href="{% if user.is_authenticated %}{% url 'apply_job' job.id %}{% else %}{% url 'login' %}{% endif %}" class="btn btn-primary">Apply Now</a>
+          </div>
+        </article>
+        {% empty %}
+        <p>No jobs yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Browse by Category / Type -->
+  <section class="featured">
+    <div class="featured-inner">
+      <div class="featured-header">
+        <div>
+          <h2>Browse by Category</h2>
+          <p>Jump straight into areas you like</p>
+        </div>
+      </div>
+
+      <div class="job-grid">
+        {% for c in categories %}
+          <a href="{% url 'job_list' %}?category={{ c|urlencode }}" class="btn btn-outline full-width">{{ c }}</a>
+        {% endfor %}
+      </div>
+
+      <div class="featured-header mt-8">
+        <div>
+          <h2>Browse by Job Type</h2>
+        </div>
+      </div>
+      <div class="job-grid">
+        {% for t in job_types %}
+          <a href="{% url 'job_list' %}?job_type={{ t|urlencode }}" class="btn btn-outline full-width">{{ t }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="featured">
+    <div class="featured-inner">
+      <div class="featured-header">
+        <div>
+          <h2>How it works</h2>
+          <p>Simple steps to get started</p>
+        </div>
+      </div>
+      <div class="job-grid">
+        <article class="job-card"><h3>1. Create an account</h3><p class="summary">Sign up and set up your profile.</p></article>
+        <article class="job-card"><h3>2. Find jobs</h3><p class="summary">Search and filter jobs by your preferences.</p></article>
+        <article class="job-card"><h3>3. Apply</h3><p class="summary">Submit applications and track responses.</p></article>
+      </div>
+    </div>
+  </section>
+  <!-- Call to Action -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <h2>Ready to Take the Next Step?</h2>
+      <p>
+        Join thousands of professionals who have found their dream jobs through our platform.
+      </p>
+      <div class="cta-actions">
+        <a href="{% url 'register' %}" class="btn btn-light">Get Started Today</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">JobPortal</div>
+        <p class="footer-text">
+          Connect talented professionals with amazing opportunities.
+          Find your dream job or discover the perfect candidate for your team.
+        </p>
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Twitter">t</a>
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="Instagram">ig</a>
+          
+        </div>
+      </div>
+
+      <div class="footer-columns">
+        <div class="footer-column">
+          <h4>For Job Seekers</h4>
+          <ul>
+            <li><a href="#">Browse Jobs</a></li>
+            <li><a href="#">Browse Companies</a></li>
+            <li><a href="#">Career Advice</a></li>
+            <li><a href="#">Resume Builder</a></li>
+            <li><a href="#">Salary Guide</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>For Employers</h4>
+          <ul>
+            <li><a href="#">Browse Resumes</a></li>
+            <li><a href="#">Pricing Plans</a></li>
+            <li><a href="#">Recruitment Solutions</a></li>
+            <li><a href="#">Employer Resources</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {{ now|date:"Y" }} JobPortal. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

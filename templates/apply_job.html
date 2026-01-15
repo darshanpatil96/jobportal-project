@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Apply for {{ job.title }}{% endblock %}
+{% block content %}
+<div class="-mx-6 px-6 py-12 min-h-[80vh] bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100">
+  <div class="max-w-6xl mx-auto">
+    <div class="mb-6 flex items-center justify-between">
+      <a href="{% url 'job_detail' job.id %}" class="text-sm text-slate-600 hover:text-blue-700">← Back to job</a>
+      <div class="flex items-center gap-2 text-xs">
+        <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-100">{{ job.job_type }}</span>
+        <span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">{{ job.category }}</span>
+        <span class="inline-flex items-center px-3 py-1 rounded-full bg-slate-50 text-slate-700 border border-slate-200">📍 {{ job.location }}</span>
+      </div>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-[1.2fr,1fr]">
+      <div class="bg-white/95 backdrop-blur shadow-lg rounded-2xl p-8 border border-slate-100">
+        <div class="flex items-start gap-3">
+          <div class="h-12 w-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold">
+            {{ job.company|slice:":2"|upper }}
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-slate-900">{{ job.title }}</h1>
+            <p class="text-slate-600">{{ job.company }}</p>
+          </div>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div class="rounded-xl border border-slate-200 p-4 bg-slate-50/60">
+            <p class="text-slate-500">Location</p>
+            <p class="font-medium text-slate-800">{{ job.location }}</p>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-4 bg-slate-50/60">
+            <p class="text-slate-500">Type</p>
+            <p class="font-medium text-slate-800">{{ job.job_type }}</p>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-4 bg-slate-50/60">
+            <p class="text-slate-500">Category</p>
+            <p class="font-medium text-slate-800">{{ job.category }}</p>
+          </div>
+        </div>
+
+        <div class="mt-6 text-slate-700 text-sm">
+          <p>{{ job.description|truncatechars:280 }}</p>
+        </div>
+      </div>
+
+      <div class="bg-white/95 backdrop-blur shadow-lg rounded-2xl p-8 border border-slate-100">
+        <div class="mb-4">
+          <div class="flex items-center gap-2 text-xs">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white">1</span>
+            <span class="font-medium text-slate-800">Fill your details</span>
+          </div>
+          <div class="mt-2 flex items-center gap-2 text-xs">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white">2</span>
+            <span class="font-medium text-slate-800">Upload resume</span>
+          </div>
+          <div class="mt-2 flex items-center gap-2 text-xs">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white">3</span>
+            <span class="font-medium text-slate-800">Submit application</span>
+          </div>
+        </div>
+
+        {% if messages %}
+          <div class="mb-4">
+            {% for m in messages %}
+              <div class="text-sm rounded-lg p-3 {{ m.tags }}">
+                {{ m }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+
+          <div>
+            <label for="id_qualification" class="block text-sm font-medium text-slate-700">Qualification</label>
+            <input id="id_qualification" name="qualification" type="text" value="{{ form.qualification.value|default_if_none:'' }}" placeholder="e.g. B.Tech in Computer Science" class="w-full rounded-lg border border-slate-200 px-3 py-2" />
+            {% if form.errors.qualification %}<p class="text-red-600 text-sm mt-1">{{ form.errors.qualification|striptags }}</p>{% endif %}
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="id_phone" class="block text-sm font-medium text-slate-700">Phone</label>
+              <input id="id_phone" name="phone" type="text" value="{{ form.phone.value|default_if_none:'' }}" placeholder="e.g. +1 555 123 4567" class="w-full rounded-lg border border-slate-200 px-3 py-2" />
+              {% if form.errors.phone %}<p class="text-red-600 text-sm mt-1">{{ form.errors.phone|striptags }}</p>{% endif %}
+            </div>
+            <div>
+              <label for="id_experience" class="block text-sm font-medium text-slate-700">Experience</label>
+              <input id="id_experience" name="experience" type="text" value="{{ form.experience.value|default_if_none:'' }}" placeholder="e.g. 3 years in React" class="w-full rounded-lg border border-slate-200 px-3 py-2" />
+              {% if form.errors.experience %}<p class="text-red-600 text-sm mt-1">{{ form.errors.experience|striptags }}</p>{% endif %}
+            </div>
+          </div>
+
+          <div>
+            <label for="id_resume" class="block text-sm font-medium text-slate-700">Resume</label>
+            <div class="mt-1 border border-slate-200 rounded-xl bg-slate-50/60 p-4">
+              <input id="id_resume" name="resume" type="file" class="block w-full text-sm text-slate-700" />
+              <p id="resumeName" class="text-xs text-slate-500 mt-1">PDF or DOC, max 5MB</p>
+              {% if form.errors.resume %}<p class="text-red-600 text-sm mt-1">{{ form.errors.resume|striptags }}</p>{% endif %}
+            </div>
+          </div>
+
+          <div>
+            <label for="id_cover_letter" class="block text-sm font-medium text-slate-700">Cover letter</label>
+            <textarea id="id_cover_letter" name="cover_letter" rows="6" placeholder="Write a short note to the employer" class="w-full rounded-lg border border-slate-200 px-3 py-2">{{ form.cover_letter.value|default_if_none:'' }}</textarea>
+            {% if form.errors.cover_letter %}<p class="text-red-600 text-sm mt-1">{{ form.errors.cover_letter|striptags }}</p>{% endif %}
+          </div>
+
+          <button type="submit" class="w-full inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-sm">Submit Application</button>
+          <p class="text-xs text-slate-500 mt-2">By submitting, you agree to allow the employer to contact you.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const rf = document.getElementById('id_resume');
+  const rn = document.getElementById('resumeName');
+  if (rf && rn) {
+    rf.addEventListener('change', function(){
+      const f = this.files && this.files[0];
+      rn.textContent = f ? f.name : 'PDF or DOC, max 5MB';
+    });
+  }
+</script>
+{% endblock %}

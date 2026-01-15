@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Applications - {{ job.title }}{% endblock %}
+
+{% block content %}
+<div class="-mx-6 px-6 py-10 min-h-[70vh] bg-gradient-to-b from-slate-100 via-blue-50 to-slate-100">
+  <div class="max-w-6xl mx-auto">
+    <!-- Back button & Job info -->
+    <div class="mb-6">
+      <a href="{% url 'employer_dashboard' %}" class="text-blue-600 hover:text-blue-700 text-sm font-medium mb-4 inline-block">
+        ← Back to Dashboard
+      </a>
+      <h1 class="text-3xl font-bold text-slate-900">{{ job.title }}</h1>
+      <p class="text-slate-600 mt-1">{{ job.company }} • {{ job.location }}</p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+      {% for message in messages %}
+        <div class="mb-4 p-4 rounded-lg {% if message.tags %}bg-{{ message.tags }}-50 text-{{ message.tags }}-800 border border-{{ message.tags }}-200{% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Applications Table -->
+    {% if applications %}
+      <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl overflow-hidden border border-slate-100">
+        <table class="w-full">
+          <thead class="bg-slate-50 border-b border-slate-200">
+            <tr>
+              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Candidate</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Qualification</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Experience</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Phone</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Applied</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Status</th>
+              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for app in applications %}
+              <tr class="border-b border-slate-200 hover:bg-slate-50 transition">
+                <td class="px-6 py-4 text-sm text-slate-900 font-medium">
+                  {{ app.user.first_name }} {{ app.user.last_name }}
+                  <br>
+                  <span class="text-xs text-slate-600">@{{ app.user.username }}</span>
+                </td>
+                <td class="px-6 py-4 text-sm text-slate-700">{{ app.qualification|default:"N/A" }}</td>
+                <td class="px-6 py-4 text-sm text-slate-700">{{ app.experience|default:"N/A" }}</td>
+                <td class="px-6 py-4 text-sm text-slate-700">{{ app.phone|default:"N/A" }}</td>
+                <td class="px-6 py-4 text-sm text-slate-600">{{ app.applied_at|date:"M d, Y" }}</td>
+                <td class="px-6 py-4">
+                  <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium
+                    {% if app.status == 'Applied' %}bg-blue-50 text-blue-700 border border-blue-200
+                    {% elif app.status == 'Shortlisted' %}bg-purple-50 text-purple-700 border border-purple-200
+                    {% elif app.status == 'Interview' %}bg-orange-50 text-orange-700 border border-orange-200
+                    {% elif app.status == 'Hired' %}bg-green-50 text-green-700 border border-green-200
+                    {% elif app.status == 'Rejected' %}bg-red-50 text-red-700 border border-red-200
+                    {% endif %}">
+                    {{ app.status }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm">
+                  <div class="flex gap-2 flex-wrap">
+                    <!-- Download Resume -->
+                    {% if app.resume %}
+                      <a href="{{ app.resume.url }}" 
+                         class="px-2 py-1 text-xs bg-slate-100 text-slate-700 rounded hover:bg-slate-200 transition"
+                         download>
+                        📄 Resume
+                      </a>
+                    {% endif %}
+
+                    <!-- View Cover Letter -->
+                    <button onclick="showCoverLetter({{ app.id }}, '{{ app.user.first_name }}')"
+                            class="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition">
+                      📝 Letter
+                    </button>
+
+                    <!-- Status Dropdown -->
+                    <form method="POST" class="inline">
+                      {% csrf_token %}
+                      <input type="hidden" name="app_id" value="{{ app.id }}">
+                      <select name="status" onchange="this.form.submit()" 
+                              class="text-xs px-2 py-1 border border-slate-300 rounded hover:border-blue-500 focus:outline-none focus:border-blue-600">
+                        {% for status in status_choices %}
+                          <option value="{{ status }}" {% if app.status == status %}selected{% endif %}>
+                            {{ status }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl p-8 border border-slate-100 text-center text-slate-600">
+        <p class="font-medium">No applications yet for this job.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Cover Letter Modal -->
+<div id="letterModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+    <div class="sticky top-0 bg-white border-b border-slate-200 p-6 flex justify-between items-center">
+      <h2 class="text-xl font-bold text-slate-900" id="letterTitle"></h2>
+      <button onclick="document.getElementById('letterModal').classList.add('hidden')" 
+              class="text-slate-500 hover:text-slate-700 text-2xl">×</button>
+    </div>
+    <div class="p-6">
+      <div id="letterContent" class="text-slate-700 whitespace-pre-wrap leading-relaxed"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showCoverLetter(appId, candidateName) {
+    // In a real app, you'd fetch this via AJAX
+    const letters = {
+      {% for app in applications %}
+        {{ app.id }}: `{{ app.cover_letter|default:"No cover letter provided." }}`,
+      {% endfor %}
+    };
+    
+    document.getElementById('letterTitle').textContent = `Cover Letter - ${candidateName}`;
+    document.getElementById('letterContent').textContent = letters[appId] || 'No cover letter provided.';
+    document.getElementById('letterModal').classList.remove('hidden');
+  }
+</script>
+
+{% endblock %}

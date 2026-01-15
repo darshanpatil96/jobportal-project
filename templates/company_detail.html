@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}{{ company.company_name }} - Company Profile{% endblock %}
+
+{% block content %}
+<div class="-mx-6 px-6 py-10 min-h-[70vh] bg-gradient-to-b from-slate-100 via-white to-slate-50">
+  <div class="max-w-4xl mx-auto">
+    
+    <a href="{% url 'companies' %}" class="text-blue-600 hover:text-blue-700 text-sm font-medium mb-6 inline-block">
+      ← Back to Companies
+    </a>
+
+    <!-- Company Header -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-8">
+      <div class="flex flex-col md:flex-row gap-6 items-start">
+        <!-- Logo -->
+        <div class="w-24 h-24 flex-shrink-0 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center overflow-hidden">
+          {% if company.company_logo %}
+            <img src="{{ company.company_logo.url }}" alt="{{ company.company_name }}" class="w-full h-full object-contain p-2">
+          {% else %}
+            <span class="text-4xl">🏢</span>
+          {% endif %}
+        </div>
+
+        <!-- Info -->
+        <div class="flex-1">
+          <h1 class="text-3xl font-bold text-slate-900 mb-2">{{ company.company_name }}</h1>
+          
+          <div class="flex flex-wrap gap-4 text-sm text-slate-600 mb-4">
+            {% if company.location %}
+              <div class="flex items-center">
+                📍 {{ company.location }}
+              </div>
+            {% endif %}
+            {% if company.company_website %}
+              <div class="flex items-center">
+                🌐 <a href="{{ company.company_website }}" target="_blank" class="text-blue-600 hover:underline ml-1">
+                  Visit Website
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
+          {% if company.company_description %}
+            <div class="prose prose-slate max-w-none text-slate-700">
+              {{ company.company_description|linebreaks }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Jobs -->
+    <div class="mb-6">
+      <h2 class="text-xl font-bold text-slate-900 mb-4">
+        Open Positions at {{ company.company_name }}
+        <span class="text-slate-400 text-sm font-normal ml-2">({{ jobs.count }})</span>
+      </h2>
+
+      {% if jobs %}
+        <div class="grid gap-4">
+          {% for job in jobs %}
+            <a href="{% url 'job_detail' job.id %}" class="block group">
+              <div class="bg-white rounded-xl border border-slate-200 p-5 hover:border-blue-300 hover:shadow-md transition-all">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h3 class="font-bold text-lg text-slate-900 group-hover:text-blue-600 transition-colors">
+                      {{ job.title }}
+                    </h3>
+                    <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-sm text-slate-500">
+                      <span>📍 {{ job.location }}</span>
+                      <span>💼 {{ job.job_type }}</span>
+                      <span>💰 {{ job.salary }}</span>
+                    </div>
+                  </div>
+                  <span class="text-xs text-slate-400 bg-slate-100 px-2 py-1 rounded">
+                    {{ job.posted_at|timesince }} ago
+                  </span>
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-10 bg-white rounded-xl border border-slate-200 border-dashed">
+          <p class="text-slate-500">No open positions at the moment.</p>
+        </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

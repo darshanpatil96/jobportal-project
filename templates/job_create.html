@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Post a Job{% endblock %}
+
+{% block content %}
+<div class="-mx-6 px-6 py-12 min-h-[70vh] bg-gradient-to-br from-slate-100 via-blue-50 to-slate-200">
+  <div class="max-w-2xl mx-auto bg-white/90 backdrop-blur shadow-xl rounded-2xl p-10 border border-slate-100">
+
+    <h1 class="text-2xl font-bold mb-6 text-slate-900">Post a Job</h1>
+    <p class="text-slate-500 mb-8">
+      Share your opportunity with thousands of job seekers. Fill in the details below to create a new job listing.
+    </p>
+
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      {% for field in form %}
+        <div>
+          <label class="block font-medium mb-1 text-slate-800" for="{{ field.id_for_label }}">
+            {{ field.label }}
+          </label>
+
+          <div class="mt-1">
+            {{ field }}
+          </div>
+
+          {% if field.help_text %}
+            <p class="text-xs text-slate-400 mt-1">{{ field.help_text }}</p>
+          {% endif %}
+
+          {% if field.errors %}
+            <p class="text-red-600 text-sm mt-1">{{ field.errors|striptags }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <div class="pt-2">
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 shadow-sm"
+        >
+          Create Job
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

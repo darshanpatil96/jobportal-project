@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.title }} at {{ job.company }}{% endblock %}
+
+{% block content %}
+<div class="-mx-6 px-6 py-10 min-h-[70vh] bg-gradient-to-b from-slate-100 via-blue-50 to-slate-100">
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Back link -->
+    <div class="mb-4">
+      <a href="{% url 'job_list' %}"
+         class="inline-flex items-center text-sm text-slate-500 hover:text-blue-600">
+        <span class="mr-1">←</span> Back to all jobs
+      </a>
+    </div>
+
+    <div class="grid gap-8 md:grid-cols-[2fr,1fr]">
+      <!-- Main job content -->
+      <section class="bg-white/95 backdrop-blur shadow-lg rounded-2xl p-8 border border-slate-100">
+        <!-- Header: company + title -->
+        <div class="flex items-start gap-4 mb-6">
+          <div class="h-12 w-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-semibold text-lg">
+            {{ job.company|slice:":2"|upper }}
+          </div>
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900">
+              {{ job.title }}
+            </h1>
+            <p class="text-slate-600 mt-1">
+              {{ job.company }}
+            </p>
+
+            <!-- Tags + status badges -->
+            <div class="flex flex-wrap gap-2 mt-3 text-xs items-center">
+              <span class="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-100">
+                {{ job.job_type }}
+              </span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                {{ job.category }}
+              </span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full bg-slate-50 text-slate-700 border border-slate-200">
+                📍 {{ job.location }}
+              </span>
+              {% if applied %}
+              <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 border border-green-200 font-medium">
+                ✓ Already applied
+              </span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mt-4 text-slate-700 leading-relaxed space-y-4">
+          <h2 class="font-semibold text-slate-900 mb-1">Job Description</h2>
+          <p>{{ job.description }}</p>
+        </div>
+      </section>
+
+      <!-- Sidebar with key info + Apply -->
+      <aside class="bg-white/95 backdrop-blur shadow-lg rounded-2xl p-6 border border-slate-100 h-fit">
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">Job details</h2>
+
+        <dl class="space-y-3 text-sm text-slate-700">
+          {% if job.salary %}
+          <div class="flex justify-between">
+            <dt class="text-slate-500">Salary</dt>
+            <dd class="font-medium">{{ job.salary }}</dd>
+          </div>
+          {% endif %}
+
+          <div class="flex justify-between">
+            <dt class="text-slate-500">Job type</dt>
+            <dd class="font-medium">{{ job.job_type }}</dd>
+          </div>
+
+          <div class="flex justify-between">
+            <dt class="text-slate-500">Location</dt>
+            <dd class="font-medium">{{ job.location }}</dd>
+          </div>
+
+          <div class="flex justify-between">
+            <dt class="text-slate-500">Category</dt>
+            <dd class="font-medium">{{ job.category }}</dd>
+          </div>
+
+          <div class="flex justify-between">
+            <dt class="text-slate-500">Posted</dt>
+            <dd class="font-medium">
+              {{ job.posted_at|date:"M d, Y" }}
+            </dd>
+          </div>
+        </dl>
+
+        <!-- Apply section -->
+        <div class="mt-6 border-t border-slate-100 pt-4">
+          {% if user.is_authenticated %}
+            {% if applied %}
+              <button
+                class="w-full bg-slate-300 text-white py-2.5 px-4 rounded-lg cursor-not-allowed text-sm font-medium">
+                You have already applied
+              </button>
+            {% else %}
+              <a
+                href="{% url 'apply_job' job.id %}"
+                class="w-full inline-flex justify-center bg-blue-600 text-white py-2.5 px-4 rounded-lg hover:bg-blue-700 text-sm font-medium shadow-sm">
+                Apply Now
+              </a>
+            {% endif %}
+          {% else %}
+            <a
+              href="{% url 'login' %}"
+              class="w-full inline-flex justify-center bg-blue-600 text-white py-2.5 px-4 rounded-lg hover:bg-blue-700 text-sm font-medium shadow-sm">
+              Sign in to apply
+            </a>
+          {% endif %}
+        </div>
+        
+        {% if user.is_authenticated and user.userprofile.role != 'employer' %}
+        <div class="mt-4 pt-4 border-t border-slate-100 text-center">
+            <form method="post" action="{% url 'toggle_save_job' job.id %}">
+                {% csrf_token %}
+                <button type="submit" class="w-full inline-flex justify-center items-center gap-2 py-2 px-4 rounded-lg border border-slate-200 hover:bg-slate-50 text-sm font-medium text-slate-700 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 {% if is_saved %}fill-red-500 text-red-500{% else %}fill-none stroke-current{% endif %}" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                    {% if is_saved %}Saved{% else %}Save Job{% endif %}
+                </button>
+            </form>
+        </div>
+        {% endif %}
+      </aside>
+    </div>
+  </div>
+</div>
+{% endblock %}

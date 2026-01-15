@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="min-h-[60vh] flex items-center justify-center">
+  <div class="w-full max-w-md bg-white/95 backdrop-blur shadow-md rounded-2xl p-6 border border-slate-100">
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold text-slate-900">Welcome back</h1>
+      <p class="text-sm text-slate-600 mt-1">Sign in to continue</p>
+    </div>
+
+    {% if form.non_field_errors %}
+      <div class="mb-4 text-sm text-red-700 bg-red-50 border border-red-100 rounded-lg p-3">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <form method="POST" class="space-y-4">
+      {% csrf_token %}
+      {% if request.GET.next %}
+          <input type="hidden" name="next" value="{{ request.GET.next }}">
+      {% endif %}
+
+      <div>
+        <label for="id_username" class="block text-sm font-medium text-slate-700">Username</label>
+        <div class="mt-1 relative">
+          <input id="id_username" name="username" type="text" autocomplete="username"
+                 value="{{ form.username.value|default_if_none:'' }}"
+                 class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+                 placeholder="Enter your username" />
+        </div>
+        {% if form.errors.username %}
+          <p class="mt-1 text-xs text-red-600">{{ form.errors.username|striptags }}</p>
+        {% endif %}
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between">
+          <label for="id_password" class="block text-sm font-medium text-slate-700">Password</label>
+          <a href="{% url 'password_reset' %}" class="text-xs text-blue-600 hover:text-blue-700">Forgot?</a>
+        </div>
+        <div class="mt-1 relative">
+          <input id="id_password" name="password" type="password" autocomplete="current-password"
+                 class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 pr-10 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600"
+                 placeholder="Enter your password" />
+          <button type="button" id="togglePassword" class="absolute inset-y-0 right-2 my-auto rounded-md px-2 text-slate-500 hover:text-slate-700">
+            Show
+          </button>
+        </div>
+        {% if form.errors.password %}
+          <p class="mt-1 text-xs text-red-600">{{ form.errors.password|striptags }}</p>
+        {% endif %}
+      </div>
+
+      <button type="submit"
+              class="w-full inline-flex items-center justify-center rounded-lg bg-blue-600 text-white font-medium px-4 py-2 hover:bg-blue-700 shadow-sm">
+        Sign In
+      </button>
+    </form>
+
+    <p class="mt-6 text-center text-sm text-slate-600">
+      Don’t have an account?
+      <a href="{% url 'register' %}" class="font-medium text-blue-600 hover:text-blue-700">Create one</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  const toggleBtn = document.getElementById('togglePassword');
+  const pwd = document.getElementById('id_password');
+  if (toggleBtn && pwd) {
+    toggleBtn.addEventListener('click', function() {
+      const isPwd = pwd.type === 'password';
+      pwd.type = isPwd ? 'text' : 'password';
+      this.textContent = isPwd ? 'Hide' : 'Show';
+    });
+  }
+</script>
+{% endblock %}

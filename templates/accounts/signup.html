@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Sign up{% endblock %}
+
+{% block content %}
+<div class="relative">
+  <div class="fixed inset-0 bg-[url('https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg')] bg-cover bg-center"></div>
+  <div class="fixed inset-0 bg-gradient-to-b from-black/60 via-slate-900/65 to-indigo-950/75"></div>
+
+  <div class="relative z-10 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md bg-slate-900/70 text-slate-100 backdrop-blur-xl border border-slate-800 shadow-2xl rounded-3xl p-6">
+    <h1 class="text-xl font-semibold mb-4">Sign up</h1>
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="w-full rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium py-2.5 hover:from-blue-600 hover:to-indigo-600 shadow">Sign up</button>
+    </form>
+
+    <p class="mt-4 text-center text-sm text-slate-300">Already have an account? <a href="{% url 'login' %}" class="text-blue-400 hover:text-blue-300">Log in</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

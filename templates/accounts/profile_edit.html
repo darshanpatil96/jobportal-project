@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile{% endblock %}
+{% block content %}
+<div class="-mx-6 px-6 py-10 min-h-[70vh] bg-gradient-to-b from-slate-100 via-blue-50 to-slate-100">
+  <div class="max-w-2xl mx-auto">
+    <a href="{% url 'profile' %}" class="text-blue-600 hover:text-blue-700 text-sm font-medium mb-4 inline-block">
+      ← Back to Profile
+    </a>
+
+    <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl p-8 border border-slate-100">
+      <h1 class="text-3xl font-bold text-slate-900 mb-8">Edit Profile</h1>
+      
+      <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <!-- Role Selection -->
+        <div>
+          <label for="{{ form.role.id_for_label }}" class="block text-sm font-semibold text-slate-900 mb-2">
+            {{ form.role.label }}
+          </label>
+          {{ form.role }}
+        </div>
+
+        <!-- Job Seeker Fields -->
+        <fieldset class="border border-slate-200 rounded-lg p-4" id="jobseeker-fields">
+          <legend class="text-sm font-semibold text-slate-900 px-2">Job Seeker Information</legend>
+          
+          <div class="mt-4 space-y-4">
+            <div>
+              <label for="{{ form.full_name.id_for_label }}" class="block text-sm font-medium text-slate-900 mb-1">
+                {{ form.full_name.label }}
+              </label>
+              {{ form.full_name }}
+            </div>
+
+            <div>
+              <label for="{{ form.phone.id_for_label }}" class="block text-sm font-medium text-slate-900 mb-1">
+                {{ form.phone.label }}
+              </label>
+              {{ form.phone }}
+            </div>
+
+            <div>
+              <label for="{{ form.location.id_for_label }}" class="block text-sm font-medium text-slate-900 mb-1">
+                {{ form.location.label }}
+              </label>
+              {{ form.location }}
+            </div>
+
+            <div>
+              <label for="{{ form.resume.id_for_label }}" class="block text-sm font-medium text-slate-900 mb-1">
+                {{ form.resume.label }}
+              </label>
+              {% if form.resume.value %}
+                <p class="text-xs text-slate-600 mb-2">Current: <a href="{{ form.resume.value.url }}" class="text-blue-600 hover:text-blue-700">📄 Download</a></p>
+              {% endif %}
+              {{ form.resume }}
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Employer Fields -->
+        <fieldset class="border border-slate-200 rounded-lg p-4" id="employer-fields">
+          <legend class="text-sm font-semibold text-slate-900 px-2">Company Information (Employers)</legend>
+          
+          <div class="mt-4 space-y-4">
+            <div>
+              <label for="{{ form.company_name.id_for_label }}" class="block text-sm font-medium text-slate-900 mb-1">
+                {{ form.company_name.label }}
+              </label>
+              {{ form.company_name }}
+            </div>
+
+            <div>
+              <label for="{{ form.company_website.id_for_label }}" class="block text-sm font-medium text-slate-900 mb-1">
+                {{ form.company_website.label }}
+              </label>
+              {{ form.company_website }}
+            </div>
+
+            <div>
+              <label for="{{ form.company_logo.id_for_label }}" class="block text-sm font-medium text-slate-900 mb-1">
+                {{ form.company_logo.label }}
+              </label>
+              {% if form.company_logo.value %}
+                <p class="text-xs text-slate-600 mb-2">Current:</p>
+                <img src="{{ form.company_logo.value.url }}" alt="Company Logo" class="w-20 h-20 rounded-lg object-cover mb-2">
+              {% endif %}
+              {{ form.company_logo }}
+            </div>
+
+            <div>
+              <label for="{{ form.company_description.id_for_label }}" class="block text-sm font-medium text-slate-900 mb-1">
+                {{ form.company_description.label }}
+              </label>
+              {{ form.company_description }}
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Submit Button -->
+        <div class="flex gap-3 pt-4">
+          <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition">
+            Save Changes
+          </button>
+          <a href="{% url 'profile' %}" class="px-6 py-2 bg-slate-200 text-slate-900 rounded-lg hover:bg-slate-300 font-semibold transition">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: border-color 0.3s;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  input[type="file"] {
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    width: 100%;
+  }
+</style>
+
+<script>
+  // Show/hide employer fields based on role selection
+  const roleSelect = document.querySelector('select[name="role"]');
+  const jobseekerFields = document.getElementById('jobseeker-fields');
+  const employerFields = document.getElementById('employer-fields');
+
+  function toggleFields() {
+    if (roleSelect.value === 'employer') {
+      employerFields.style.display = 'block';
+      employerFields.style.opacity = '1';
+      employerFields.style.pointerEvents = 'auto';
+      
+      // We don't hide job seeker fields entirely, as full_name/phone/location 
+      // are useful for employers too (contact person info)
+      jobseekerFields.querySelector('legend').textContent = 'Contact Person Information';
+      // Hide resume field for employers
+      const resumeDiv = document.querySelector('label[for*="resume"]').closest('div');
+      if (resumeDiv) resumeDiv.style.display = 'none';
+
+    } else {
+      employerFields.style.display = 'none';
+      
+      jobseekerFields.querySelector('legend').textContent = 'Job Seeker Information';
+      // Show resume field for job seekers
+      const resumeDiv = document.querySelector('label[for*="resume"]').closest('div');
+      if (resumeDiv) resumeDiv.style.display = 'block';
+    }
+  }
+
+  roleSelect.addEventListener('change', toggleFields);
+  toggleFields(); // Initial call
+</script>
+
+{% endblock %}

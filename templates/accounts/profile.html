@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="min-h-[60vh] flex items-center justify-center">
+  <div class="w-full max-w-2xl bg-white/95 backdrop-blur shadow-md rounded-2xl p-6 border border-slate-100">
+    <h1 class="text-2xl font-bold text-slate-900 mb-6">My Profile</h1>
+    <dl class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+      <div>
+        <dt class="text-slate-500">Role</dt>
+        <dd class="font-medium">{{ profile.role|title }}</dd>
+      </div>
+      <div>
+        <dt class="text-slate-500">Full name</dt>
+        <dd class="font-medium">{{ profile.full_name|default:"—" }}</dd>
+      </div>
+      <div>
+        <dt class="text-slate-500">Phone</dt>
+        <dd class="font-medium">{{ profile.phone|default:"—" }}</dd>
+      </div>
+      <div>
+        <dt class="text-slate-500">Location</dt>
+        <dd class="font-medium">{{ profile.location|default:"—" }}</dd>
+      </div>
+      <div class="md:col-span-2">
+        <dt class="text-slate-500">Resume</dt>
+        <dd class="font-medium">
+          {% if profile.resume %}
+            <a href="{{ profile.resume.url }}" class="text-blue-600 hover:text-blue-700">Download resume</a>
+          {% else %}
+            —
+          {% endif %}
+        </dd>
+      </div>
+    </dl>
+    <div class="mt-6">
+      <a href="{% url 'profile_edit' %}" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 shadow-sm">Edit Profile</a>
+    </div>
+  </div>
+  </div>
+{% endblock %}

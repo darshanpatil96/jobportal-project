@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Job Portal{% endblock %}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-md fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="{% url 'home' %}" class="text-2xl font-bold text-blue-600">JobPortal</a>
+
+            <div class="space-x-6 flex items-center">
+                <a href="{% url 'home' %}" class="hover:text-blue-600">Home</a>
+                <a href="{% url 'job_list' %}" class="hover:text-blue-600">Find Jobs</a>
+                <a href="{% url 'companies' %}" class="hover:text-blue-600">Companies</a>
+                <a href="{% url 'about' %}" class="hover:text-blue-600">About</a>
+                {% if user.is_authenticated and user.userprofile.role == 'employer' %}
+                    <a href="{% url 'employer_dashboard' %}" class="hover:text-blue-600 font-medium text-blue-600">Dashboard</a>
+                {% elif user.is_authenticated and user.userprofile.role != 'employer' %}
+                    <a href="{% url 'jobseeker_dashboard' %}" class="hover:text-blue-600 font-medium text-blue-600">Dashboard</a>
+                {% endif %}
+                {% if user.is_authenticated and user.userprofile.role != 'employer' %}
+                    <a href="{% url 'my_applications' %}" class="hover:text-blue-600">My Applications</a>
+                    <a href="{% url 'saved_jobs' %}" class="hover:text-blue-600">Saved Jobs</a>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                    <!-- Notification bell -->
+                    <a href="{% url 'notifications' %}" class="relative inline-flex items-center justify-center w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 mr-2" aria-label="Notifications">
+                        <span class="text-xl">&#128276;</span>
+                        {% if unread_notification_count > 0 %}
+                            <span class="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-red-500 rounded-full">
+                                {{ unread_notification_count }}
+                            </span>
+                        {% endif %}
+                    </a>
+
+                    <a href="{% url 'profile' %}" class="hover:text-blue-600">My Profile</a>
+                    <a href="{% url 'logout' %}" class="hover:text-blue-600">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-blue-600">Login</a>
+                    <a href="{% url 'register' %}" class="bg-blue-600 text-white px-4 py-1 rounded-lg hover:bg-blue-700">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="pt-24 px-6 max-w-7xl mx-auto">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+</body>
+</html>

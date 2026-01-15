@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Jobs{% endblock %}
+
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-2">
+  {% if job_type == 'Internship' %}
+    Internships
+  {% elif category == 'Fresher' or 'Fresher' in q or 'Junior' in q %}
+    Freshers
+  {% else %}
+    Available Jobs
+  {% endif %}
+</h1>
+{% if job_type or category or q %}
+  <p class="text-slate-600 mb-6 text-sm">Showing filtered results</p>
+{% else %}
+  <p class="text-slate-600 mb-6 text-sm">Browse the latest opportunities</p>
+{% endif %}
+
+<form method="get" class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+  <input type="text" name="q" value="{{ q }}" placeholder="Title, company, keywords" class="rounded-lg border border-slate-200 px-3 py-2" />
+  <input type="text" name="location" value="{{ location }}" placeholder="Location" class="rounded-lg border border-slate-200 px-3 py-2" />
+  <select name="job_type" class="rounded-lg border border-slate-200 px-3 py-2">
+    <option value="">All Types</option>
+    <option value="Full-Time" {% if job_type == 'Full-Time' %}selected{% endif %}>Full-Time</option>
+    <option value="Part-Time" {% if job_type == 'Part-Time' %}selected{% endif %}>Part-Time</option>
+    <option value="Internship" {% if job_type == 'Internship' %}selected{% endif %}>Internship</option>
+    <option value="Remote" {% if job_type == 'Remote' %}selected{% endif %}>Remote</option>
+  </select>
+  <button class="rounded-lg bg-blue-600 text-white px-4 py-2">Search</button>
+  {% if q or location %}
+    <a href="{% url 'job_list' %}" class="text-sm text-slate-500">Clear</a>
+  {% endif %}
+  <input type="hidden" name="page" value="{{ page_obj.number }}" />
+</form>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    {% for job in page_obj %}
+    <div class="bg-white shadow-md rounded-lg p-6 relative">
+        {% if user.is_authenticated and user.userprofile.role != 'employer' %}
+        <div class="absolute top-6 right-6">
+            <form method="post" action="{% url 'toggle_save_job' job.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <button type="submit" class="text-slate-400 hover:text-red-500 transition" 
+                        title="{% if job.id in saved_job_ids %}Unsave{% else %}Save{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 {% if job.id in saved_job_ids %}fill-red-500 text-red-500{% else %}fill-none stroke-current{% endif %}" viewBox="0 0 24 24" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Applied Badge for Jobseekers -->
+        {% if job.id in applied_job_ids %}
+        <div class="absolute top-6 left-6 inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-medium border border-green-300">
+            ✓ Applied
+        </div>
+        {% endif %}
+        
+        <!-- Application Count for Employers -->
+        {% if user_is_employer %}
+        <div class="absolute top-6 left-6 inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-medium border border-blue-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM6 20h12a6 6 0 00-6-6 6 6 0 00-6 6z" />
+            </svg>
+            {{ job.app_count }} application{{ job.app_count|pluralize }}
+        </div>
+        {% endif %}
+        
+        <h2 class="text-xl font-semibold text-gray-800 {% if job.id in applied_job_ids %}pr-8{% else %}pr-8{% endif %}">{{ job.title }}</h2>
+        <p class="text-gray-600 mt-2">{{ job.company }}</p>
+        <p class="text-gray-500 mt-1">{{ job.location }}</p>
+
+        <a href="{% url 'job_detail' job.id %}"
+           class="mt-4 inline-block text-blue-600 font-medium hover:underline">
+           View Details →
+        </a>
+    </div>
+    {% empty %}
+    <p>No jobs available.</p>
+    {% endfor %}
+
+</div>
+
+{% if page_obj.paginator.num_pages > 1 %}
+  <div class="mt-8 flex items-center justify-center gap-2">
+    {% if page_obj.has_previous %}
+      <a href="?q={{ q }}&location={{ location }}&job_type={{ job_type }}&category={{ category }}&sort={{ sort }}{% if remote_only %}&remote_only=1{% endif %}{% if internships_only %}&internships_only=1{% endif %}{% if entry_level_only %}&entry_level_only=1{% endif %}&page={{ page_obj.previous_page_number }}" class="px-3 py-1 rounded border border-slate-200">Prev</a>
+    {% endif %}
+    <span class="px-3 py-1">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a href="?q={{ q }}&location={{ location }}&job_type={{ job_type }}&category={{ category }}&sort={{ sort }}{% if remote_only %}&remote_only=1{% endif %}{% if internships_only %}&internships_only=1{% endif %}{% if entry_level_only %}&entry_level_only=1{% endif %}&page={{ page_obj.next_page_number }}" class="px-3 py-1 rounded border border-slate-200">Next</a>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %} 
+{% block title %}Saved Jobs{% endblock %} 
+
+{% block content %} 
+<div class="max-w-4xl mx-auto py-10"> 
+  <h1 class="text-3xl font-bold mb-6 text-slate-800">Saved Jobs</h1> 
+
+  {% if saved_jobs %} 
+    <div class="space-y-4"> 
+      {% for saved in saved_jobs %} 
+        <div class="bg-white shadow-md rounded-lg p-5 border border-slate-200 flex justify-between items-center"> 
+          <div> 
+            <a href="{% url 'job_detail' saved.job.id %}" 
+               class="text-lg font-semibold text-blue-700 hover:underline"> 
+              {{ saved.job.title }} 
+            </a> 
+            <p class="text-slate-600 text-sm"> 
+              {{ saved.job.company }} · {{ saved.job.location }} 
+            </p> 
+            <p class="text-slate-400 text-xs mt-1"> 
+              Saved on {{ saved.created_at|date:"M d, Y" }} 
+            </p> 
+          </div> 
+          <form method="post" action="{% url 'toggle_save_job' saved.job.id %}"> 
+            {% csrf_token %} 
+            <input type="hidden" name="next" value="{{ request.get_full_path }}"> 
+            <button class="text-sm text-slate-600 hover:text-slate-900"> 
+              Unsave 
+            </button> 
+          </form> 
+        </div> 
+      {% endfor %} 
+    </div> 
+  {% else %} 
+    <div class="text-center py-12 bg-white rounded-lg shadow-sm border border-slate-200"> 
+      <h3 class="mt-2 text-sm font-medium text-slate-900">No saved jobs</h3> 
+      <p class="mt-1 text-sm text-slate-500"> 
+        Save jobs you’re interested in and review them here. 
+      </p> 
+      <div class="mt-6"> 
+        <a href="{% url 'job_list' %}" 
+           class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"> 
+          Browse Jobs 
+        </a> 
+      </div> 
+    </div> 
+  {% endif %} 
+</div> 
+{% endblock %}
