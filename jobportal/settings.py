@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from decouple import config, Csv
+import dj_database_url
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,8 +28,23 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+# Hosts and security
+# Example ALLOWED_HOSTS for PythonAnywhere:
+#   yourusername.pythonanywhere.com
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1,.pythonanywhere.com',
+    cast=Csv(),
+)
 
+# CSRF trusted origins (needed when DEBUG=False on hosted domains like PythonAnywhere)
+# Example value for PythonAnywhere:
+#   https://yourusername.pythonanywhere.com
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='https://*.pythonanywhere.com',
+    cast=Csv(),
+)
 
 # Application definition
 
@@ -47,6 +64,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -83,10 +101,11 @@ WSGI_APPLICATION = 'jobportal.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        ssl_require=False,
+    )
 }
 
 
@@ -124,17 +143,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# This is the URL prefix you'll configure on PythonAnywhere as the "static" URL
+STATIC_URL = '/static/'
 
-# Add this:
+# Extra static files to look in (your local "static" folder)
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
 # Directory where `collectstatic` will collect static files for production
+# On PythonAnywhere you'll point the static files mapping to this folder
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Media
+# Use WhiteNoise to serve static files in production (Render)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Media (user-uploaded files)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
