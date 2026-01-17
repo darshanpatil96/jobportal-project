@@ -57,7 +57,6 @@ pillow==11.3.0
 playsound==1.2.2
 protobuf==6.32.0
 pvporcupine==3.0.5
-PyAudio==0.2.14
 PyAutoGUI==0.9.54
 pycparser==2.22
 pygame==2.6.1
