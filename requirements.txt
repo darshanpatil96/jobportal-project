@@ -66,14 +66,14 @@ Pygments==2.19.2
 PyMsgBox==2.0.1
 pyparsing==3.2.3
 pyperclip==1.11.0
-pypiwin32==223
+# pypiwin32==223  # Windows-only, not needed on Render
 PyRect==0.2.0
 PyScreeze==1.0.1
 python-decouple==3.8
 pyttsx3==2.99
 pytweening==1.2.0
 pywhatkit==5.4
-pywin32==311
+# pywin32==311  # Windows-only, not needed on Render
 regex==2025.7.34
 requests==2.32.5
 requests-toolbelt==1.0.0
