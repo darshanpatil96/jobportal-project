@@ -33,18 +33,20 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 #   yourusername.pythonanywhere.com
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,.pythonanywhere.com',
+    default='localhost,127.0.0.1,.onrender.com',
     cast=Csv(),
 )
+
 
 # CSRF trusted origins (needed when DEBUG=False on hosted domains like PythonAnywhere)
 # Example value for PythonAnywhere:
 #   https://yourusername.pythonanywhere.com
 CSRF_TRUSTED_ORIGINS = config(
     'CSRF_TRUSTED_ORIGINS',
-    default='https://*.pythonanywhere.com',
+    default='https://*.onrender.com',
     cast=Csv(),
 )
+
 
 # Application definition
 
