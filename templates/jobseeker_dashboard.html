@@ -1,205 +1,220 @@
 {% extends "base.html" %}
 
-{% block title %}My Dashboard{% endblock %}
+{% block title %}My Dashboard - ARTISAN{% endblock %}
 
 {% block content %}
-<div class="-mx-6 px-6 py-10 min-h-[80vh] bg-gradient-to-b from-slate-100 via-blue-50 to-slate-100">
-  <div class="max-w-6xl mx-auto">
-    <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-8">Welcome, {{ user.first_name|default:user.username }}!</h1>
-
-    <!-- Quick Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-      <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl p-6 border border-slate-100">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-slate-600 text-sm font-medium">Total Applications</p>
-            <p class="text-4xl font-bold text-blue-600 mt-2">{{ total_applications }}</p>
-          </div>
-          <div class="text-5xl text-blue-200">📝</div>
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-dark mb-2">Welcome back, {{ user.first_name|default:user.username }}!</h1>
+            <p class="text-gray-500">Track your job search progress</p>
         </div>
-        <a href="{% url 'my_applications' %}" class="text-blue-600 text-sm font-medium hover:underline mt-4 inline-block">View all →</a>
-      </div>
 
-      <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl p-6 border border-slate-100">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-slate-600 text-sm font-medium">Saved Jobs</p>
-            <p class="text-4xl font-bold text-green-600 mt-2">{{ total_saved }}</p>
-          </div>
-          <div class="text-5xl text-green-200">❤️</div>
-        </div>
-        <a href="{% url 'saved_jobs' %}" class="text-green-600 text-sm font-medium hover:underline mt-4 inline-block">View all →</a>
-      </div>
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <a href="{% url 'my_applications' %}" class="text-sm text-primary hover:underline">View All</a>
+                </div>
+                <p class="text-sm text-gray-500 mb-1">Applications Sent</p>
+                <p class="text-3xl font-bold text-dark">{{ total_applications }}</p>
+            </div>
 
-      <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl p-6 border border-slate-100">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-slate-600 text-sm font-medium">New Opportunities</p>
-            <p class="text-4xl font-bold text-purple-600 mt-2">{{ recommended_jobs.count }}</p>
-          </div>
-          <div class="text-5xl text-purple-200">⭐</div>
+            <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                    </div>
+                    <a href="{% url 'saved_jobs' %}" class="text-sm text-red-500 hover:underline">View All</a>
+                </div>
+                <p class="text-sm text-gray-500 mb-1">Saved Jobs</p>
+                <p class="text-3xl font-bold text-dark">{{ total_saved }}</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <span class="text-sm text-green-500 font-medium">Active</span>
+                </div>
+                <p class="text-sm text-gray-500 mb-1">Profile Views</p>
+                <p class="text-3xl font-bold text-dark">-</p>
+            </div>
         </div>
-        <a href="{% url 'job_list' %}" class="text-purple-600 text-sm font-medium hover:underline mt-4 inline-block">Browse →</a>
-      </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Recommended Jobs -->
+                <section>
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-dark">Recommended For You</h2>
+                        <a href="{% url 'job_list' %}" class="text-primary text-sm font-medium hover:underline">View all →</a>
+                    </div>
+
+                    {% if recommended_jobs %}
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        {% for job in recommended_jobs %}
+                        <article class="bg-white rounded-xl p-5 border border-gray-100 hover:border-primary/30 hover:shadow-lg transition-all group">
+                            <div class="flex items-start gap-4 mb-4">
+                                <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary font-bold">
+                                    {{ job.company|slice:":2"|upper }}
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-semibold text-dark truncate group-hover:text-primary transition-colors">
+                                        <a href="{% url 'job_detail' job.id %}">{{ job.title }}</a>
+                                    </h3>
+                                    <p class="text-sm text-gray-500">{{ job.company }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm text-gray-500 mb-4">
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    </svg>
+                                    {{ job.location }}
+                                </span>
+                                <span class="px-2 py-0.5 bg-gray-100 rounded-full text-xs">{{ job.get_job_type_display }}</span>
+                            </div>
+                            <a href="{% url 'job_detail' job.id %}" class="w-full block text-center py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-primary-dark transition-colors text-sm">
+                                View Details
+                            </a>
+                        </article>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="bg-white rounded-xl p-12 border border-gray-100 text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <p class="text-gray-500 mb-4">No recommendations yet. Start exploring!</p>
+                        <a href="{% url 'job_list' %}" class="inline-flex items-center gap-2 btn-primary text-white px-6 py-3 rounded-xl font-medium">
+                            Browse Jobs
+                        </a>
+                    </div>
+                    {% endif %}
+                </section>
+
+                <!-- Recent Applications -->
+                <section>
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-dark">Recent Applications</h2>
+                        <a href="{% url 'my_applications' %}" class="text-primary text-sm font-medium hover:underline">View all →</a>
+                    </div>
+
+                    {% if user_applications %}
+                    <div class="bg-white rounded-xl border border-gray-100 overflow-hidden">
+                        <div class="divide-y divide-gray-100">
+                            {% for app in user_applications %}
+                            <div class="p-4 hover:bg-gray-50 transition-colors flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-bold text-sm">
+                                        {{ app.job.company|slice:":2"|upper }}
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-dark">{{ app.job.title }}</p>
+                                        <p class="text-sm text-gray-500">{{ app.job.company }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <span class="px-3 py-1 text-xs font-medium rounded-full
+                                        {% if app.status == 'Applied' %}bg-blue-50 text-blue-600
+                                        {% elif app.status == 'Under Review' %}bg-yellow-50 text-yellow-600
+                                        {% elif app.status == 'Shortlisted' %}bg-purple-50 text-purple-600
+                                        {% elif app.status == 'Interview' %}bg-orange-50 text-orange-600
+                                        {% elif app.status == 'Hired' %}bg-green-50 text-green-600
+                                        {% elif app.status == 'Rejected' %}bg-red-50 text-red-600
+                                        {% else %}bg-gray-50 text-gray-600{% endif %}">
+                                        {{ app.status }}
+                                    </span>
+                                    <a href="{% url 'job_detail' app.job.id %}" class="text-primary text-sm font-medium hover:underline">View</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="bg-white rounded-xl p-8 border border-gray-100 text-center">
+                        <p class="text-gray-500 mb-4">No applications yet. Apply to your first job!</p>
+                        <a href="{% url 'job_list' %}" class="inline-flex items-center gap-2 px-6 py-3 border border-gray-200 rounded-xl font-medium hover:bg-gray-50 transition-colors">
+                            Find Jobs
+                        </a>
+                    </div>
+                    {% endif %}
+                </section>
+            </div>
+
+            <!-- Right Sidebar -->
+            <aside class="space-y-6">
+                <!-- Profile Card -->
+                <div class="bg-white rounded-2xl p-6 border border-gray-100">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-primary to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                            {{ user.username|slice:":2"|upper }}
+                        </div>
+                        <div>
+                            <p class="font-semibold text-dark">{{ user.get_full_name|default:user.username }}</p>
+                            <p class="text-sm text-gray-500">{{ user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <a href="{% url 'profile' %}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            Edit Profile
+                        </a>
+                        <a href="{% url 'saved_jobs' %}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                            Saved Jobs
+                        </a>
+                        <a href="{% url 'job_list' %}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            Browse Jobs
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Saved Jobs -->
+                <div class="bg-white rounded-2xl p-6 border border-gray-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-semibold text-dark">Saved Jobs</h3>
+                        <a href="{% url 'saved_jobs' %}" class="text-sm text-primary hover:underline">View all</a>
+                    </div>
+
+                    {% if user_saved_jobs %}
+                    <div class="space-y-3">
+                        {% for saved in user_saved_jobs|slice:":3" %}
+                        <a href="{% url 'job_detail' saved.job.id %}" class="block p-3 rounded-xl border border-gray-100 hover:border-primary/30 hover:bg-gray-50 transition-all">
+                            <p class="font-medium text-dark text-sm truncate">{{ saved.job.title }}</p>
+                            <p class="text-xs text-gray-500">{{ saved.job.company }}</p>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-sm text-gray-500 text-center py-4">No saved jobs yet</p>
+                    {% endif %}
+                </div>
+            </aside>
+        </div>
     </div>
-
-    <!-- Recommended Jobs Section -->
-    <section class="mb-10">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          ⭐ Recommended For You
-        </h2>
-        <a href="{% url 'job_list' %}" class="text-blue-600 text-sm font-medium hover:underline">View all jobs →</a>
-      </div>
-
-      {% if recommended_jobs %}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {% for job in recommended_jobs %}
-            <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl p-6 border border-slate-100 hover:shadow-lg transition flex flex-col">
-              <div>
-                <h3 class="text-lg font-semibold text-slate-900">{{ job.title }}</h3>
-                <p class="text-slate-600 text-sm mt-1">{{ job.company }}</p>
-                <p class="text-slate-500 text-xs mt-1 flex items-center gap-1">
-                  📍 {{ job.location }}
-                </p>
-                <div class="flex flex-wrap gap-2 mt-3">
-                  <span class="inline-flex items-center px-2 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-medium border border-blue-200">
-                    {{ job.job_type }}
-                  </span>
-                  <span class="inline-flex items-center px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-200">
-                    {{ job.category }}
-                  </span>
-                </div>
-              </div>
-              <a href="{% url 'job_detail' job.id %}" class="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition">
-                View & Apply →
-              </a>
-            </div>
-          {% endfor %}
-        </div>
-      {% else %}
-        <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl p-8 border border-slate-100 text-center text-slate-600">
-          <p class="font-medium mb-2">No recommended jobs yet</p>
-          <p class="text-sm mb-4">Apply to jobs to get personalized recommendations!</p>
-          <a href="{% url 'job_list' %}" class="inline-flex items-center justify-center px-6 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">
-            Explore Jobs →
-          </a>
-        </div>
-      {% endif %}
-    </section>
-
-    <!-- Recent Applications Section -->
-    <section class="mb-10">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          📝 Recent Applications
-        </h2>
-        <a href="{% url 'my_applications' %}" class="text-blue-600 text-sm font-medium hover:underline">View all →</a>
-      </div>
-
-      {% if user_applications %}
-        <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl overflow-hidden border border-slate-100">
-          <table class="w-full">
-            <thead class="bg-slate-50 border-b border-slate-200">
-              <tr>
-                <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Job Title</th>
-                <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Company</th>
-                <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Applied</th>
-                <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Status</th>
-                <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for app in user_applications %}
-                <tr class="border-b border-slate-200 hover:bg-slate-50 transition">
-                  <td class="px-6 py-4 text-sm font-medium text-slate-900">{{ app.job.title }}</td>
-                  <td class="px-6 py-4 text-sm text-slate-700">{{ app.job.company }}</td>
-                  <td class="px-6 py-4 text-sm text-slate-600">{{ app.applied_at|date:"M d, Y" }}</td>
-                  <td class="px-6 py-4">
-                    <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium
-                      {% if app.status == 'Applied' %}bg-blue-100 text-blue-700
-                      {% elif app.status == 'Under Review' %}bg-sky-100 text-sky-700
-                      {% elif app.status == 'Shortlisted' %}bg-purple-100 text-purple-700
-                      {% elif app.status == 'Interview' %}bg-orange-100 text-orange-700
-                      {% elif app.status == 'Hired' %}bg-green-100 text-green-700
-                      {% elif app.status == 'Rejected' %}bg-red-100 text-red-700
-                      {% elif app.status == 'Withdrawn' %}bg-slate-100 text-slate-600
-                      {% else %}bg-gray-100 text-gray-700{% endif %}">
-                      {{ app.status }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-4 text-sm">
-                    <a href="{% url 'job_detail' app.job.id %}" class="text-blue-600 hover:underline font-medium">
-                      View
-                    </a>
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      {% else %}
-        <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl p-8 border border-slate-100 text-center text-slate-600">
-          <p class="font-medium mb-2">No applications yet</p>
-          <p class="text-sm mb-4">Start applying to jobs to track your progress here.</p>
-          <a href="{% url 'job_list' %}" class="inline-flex items-center justify-center px-6 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">
-            Browse Jobs →
-          </a>
-        </div>
-      {% endif %}
-    </section>
-
-    <!-- Saved Jobs Section -->
-    <section>
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
-          ❤️ Saved Jobs
-        </h2>
-        <a href="{% url 'saved_jobs' %}" class="text-blue-600 text-sm font-medium hover:underline">View all →</a>
-      </div>
-
-      {% if user_saved_jobs %}
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {% for saved in user_saved_jobs %}
-            <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl p-6 border border-slate-100 hover:shadow-lg transition flex flex-col">
-              <div class="flex items-start justify-between mb-3">
-                <div>
-                  <h3 class="text-lg font-semibold text-slate-900">{{ saved.job.title }}</h3>
-                  <p class="text-slate-600 text-sm mt-1">{{ saved.job.company }}</p>
-                </div>
-                <form method="post" action="{% url 'toggle_save_job' saved.job.id %}" class="inline">
-                  {% csrf_token %}
-                  <button type="submit" class="text-red-500 hover:text-red-700 transition" title="Remove from saved">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 fill-current" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                    </svg>
-                  </button>
-                </form>
-              </div>
-              <p class="text-slate-500 text-xs flex items-center gap-1 mb-3">
-                📍 {{ saved.job.location }}
-              </p>
-              <div class="flex flex-wrap gap-2 mb-4">
-                <span class="inline-flex items-center px-2 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-medium border border-blue-200">
-                  {{ saved.job.job_type }}
-                </span>
-              </div>
-              <a href="{% url 'job_detail' saved.job.id %}" class="mt-auto inline-flex items-center justify-center px-4 py-2 rounded-lg bg-slate-100 text-slate-900 text-sm font-medium hover:bg-slate-200 transition">
-                View Job →
-              </a>
-            </div>
-          {% endfor %}
-        </div>
-      {% else %}
-        <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl p-8 border border-slate-100 text-center text-slate-600">
-          <p class="font-medium mb-2">No saved jobs yet</p>
-          <p class="text-sm mb-4">Save jobs you're interested in to review later!</p>
-          <a href="{% url 'job_list' %}" class="inline-flex items-center justify-center px-6 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">
-            Explore & Save →
-          </a>
-        </div>
-      {% endif %}
-    </section>
-  </div>
 </div>
 {% endblock %}

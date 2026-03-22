@@ -1,0 +1,156 @@
+/* Premium 'Classy Creative' Design System v3.0 */
+:root {
+  --primary: #6366f1; /* Indigo-500 */
+  --primary-dark: #4f46e5; /* Indigo-600 */
+  --primary-glow: rgba(99, 102, 241, 0.15);
+  --secondary: #94a3b8; /* Slate-400 */
+  --accent: #f5f3ff; /* Lavender Tint */
+  --background: #ffffff;
+  --surface: #f8fafc;
+  --navy: #0f172a; /* Slate-900 */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --shadow-premium: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+  --radius-xl: 32px;
+  --radius-2xl: 40px;
+}
+
+/* Base Refinements */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--navy);
+  background: var(--background);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Premium Navigation */
+.navbar-premium {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Sophisticated Typography */
+.text-gradient-premium {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Advanced Mesh Gradients */
+.mesh-bg-premium {
+    background-color: #ffffff;
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(243, 75%, 95%, 1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(263, 70%, 95%, 1) 0, transparent 50%),
+        radial-gradient(at 50% 100%, hsla(199, 89%, 95%, 1) 0, transparent 50%);
+}
+
+.mesh-bg-dark {
+    background-color: #0f172a;
+    background-image: 
+        radial-gradient(at 0% 0%, hsla(243, 75%, 20%, 0.4) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(263, 70%, 20%, 0.4) 0, transparent 50%);
+}
+
+/* Glassmorphism Components */
+.glass-card-premium {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: var(--radius-xl);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-premium:hover {
+    transform: translateY(-8px);
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.15);
+}
+
+/* Premium Buttons */
+.btn-premium-v3 {
+    position: relative;
+    padding: 0.875rem 2rem;
+    font-weight: 700;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+.btn-premium-v3::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(255,255,255,0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.btn-premium-v3:hover::after {
+    opacity: 1;
+}
+
+.btn-premium-v3-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: white;
+    box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.3);
+}
+
+.btn-premium-v3-secondary {
+    background: #ffffff;
+    color: #4f46e5;
+    border: 1.5px solid #eef2ff;
+}
+
+.btn-premium-v3-secondary:hover {
+    background: #f5f3ff;
+    border-color: #c7d2fe;
+}
+
+/* Micro-Animations */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.blueprint-number {
+    font-size: 8rem;
+    font-weight: 900;
+    line-height: 1;
+    background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: absolute;
+    top: -2rem;
+    left: -1rem;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Status Badges */
+.status-badge-premium {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.1);
+}

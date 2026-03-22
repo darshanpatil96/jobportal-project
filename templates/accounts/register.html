@@ -2,115 +2,109 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-<div class="relative">
-  <div class="fixed inset-0 bg-[url('https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg')] bg-cover bg-center"></div>
-  <div class="fixed inset-0 bg-gradient-to-b from-black/60 via-slate-900/65 to-indigo-950/75"></div>
-  <div class="relative z-10 min-h-screen flex items-center justify-center">
-    <div class="w-full max-w-md bg-slate-900/70 text-slate-100 backdrop-blur-xl border border-slate-800 shadow-2xl rounded-3xl p-6">
-    <div class="flex items-center justify-between mb-4">
-      <div class="inline-flex items-center rounded-full bg-slate-800/70 p-1 text-sm">
-        <span class="px-3 py-1 rounded-full bg-slate-700/80">Sign up</span>
-        <a href="{% url 'login' %}" class="px-3 py-1 text-slate-300 hover:text-white">Sign in</a>
+<div class="fixed inset-0 -z-10 mesh-bg opacity-90 overflow-hidden"></div>
+<div class="min-h-screen py-16 px-6 flex items-center justify-center">
+  <div class="w-full max-w-lg bg-white p-10 md:p-12 rounded-[40px] shadow-2xl shadow-indigo-200/50 border border-slate-100 relative">
+    
+    <div class="flex items-center justify-between mb-10">
+      <a href="{% url 'home' %}" class="text-2xl font-extrabold text-indigo-600">JobPortal</a>
+      <div class="flex items-center gap-1.5 p-1 bg-slate-50 rounded-2xl border border-slate-100">
+        <a href="{% url 'login' %}" class="px-5 py-2 text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Sign In</a>
+        <span class="px-5 py-2 text-sm font-bold bg-white text-indigo-600 rounded-xl shadow-sm border border-indigo-100/50">Register</span>
       </div>
-      <a href="{% url 'home' %}" class="text-slate-400 hover:text-white">✕</a>
     </div>
 
-    <h1 class="text-xl font-semibold mb-6">Create an account</h1>
+    <div class="mb-10">
+      <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Create Profile</h1>
+      <p class="text-slate-500 font-medium mt-1">Start your journey with the world's top talent pool.</p>
+    </div>
 
     {% if form.non_field_errors %}
-      <div class="mb-4 text-sm text-red-300 bg-red-900/30 border border-red-800 rounded-lg p-3">
+      <div class="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-sm font-medium">
         {{ form.non_field_errors }}
       </div>
     {% endif %}
 
-    <form method="POST" class="space-y-4">
+    <form method="POST" class="space-y-6">
       {% csrf_token %}
 
-      <div class="grid grid-cols-1 gap-4">
-        <div>
-          <label for="id_username" class="block text-xs font-medium text-slate-300 mb-1">Username</label>
-          <div class="relative">
-            <input id="id_username" name="username" type="text" autocomplete="username"
-                   value="{{ form.username.value|default_if_none:'' }}"
-                   placeholder="Enter your username"
-                   class="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-          </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-1.5">
+          <label for="id_username" class="block text-sm font-bold text-slate-700 ml-1">Username</label>
+          <input id="id_username" name="username" type="text" autocomplete="username"
+                 value="{{ form.username.value|default_if_none:'' }}"
+                 placeholder="name123"
+                 class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all" />
           {% if form.errors.username %}
-            <p class="mt-1 text-xs text-red-300">{{ form.errors.username|striptags }}</p>
+            <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">{{ form.errors.username|striptags }}</p>
           {% endif %}
         </div>
 
-        <div>
-          <label for="id_email" class="block text-xs font-medium text-slate-300 mb-1">Email</label>
-          <div class="relative">
-            <span class="absolute left-3 top-2.5 text-slate-400">✉️</span>
-            <input id="id_email" name="email" type="email" autocomplete="email"
-                   value="{{ form.email.value|default_if_none:'' }}"
-                   placeholder="Enter your email"
-                   class="w-full rounded-xl border border-slate-700 bg-slate-800/60 pl-9 pr-3 py-2 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-          </div>
+        <div class="space-y-1.5">
+          <label for="id_email" class="block text-sm font-bold text-slate-700 ml-1">Email Address</label>
+          <input id="id_email" name="email" type="email" autocomplete="email"
+                 value="{{ form.email.value|default_if_none:'' }}"
+                 placeholder="hello@example.com"
+                 class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all" />
           {% if form.errors.email %}
-            <p class="mt-1 text-xs text-red-300">{{ form.errors.email|striptags }}</p>
+            <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">{{ form.errors.email|striptags }}</p>
           {% endif %}
         </div>
 
-        <div>
-          <label for="id_password1" class="block text-xs font-medium text-slate-300 mb-1">Password</label>
+        <div class="space-y-1.5">
+          <label for="id_password1" class="block text-sm font-bold text-slate-700 ml-1">Password</label>
           <div class="relative">
             <input id="id_password1" name="password1" type="password" autocomplete="new-password"
-                   placeholder="Create a password"
-                   class="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2 pr-12 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-            <button type="button" id="togglePwd1" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs px-2">Show</button>
+                   placeholder="••••••••"
+                   class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all" />
+            <button type="button" id="togglePwd1" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 font-bold text-[10px] uppercase tracking-wider px-1">Show</button>
           </div>
           {% if form.errors.password1 %}
-            <p class="mt-1 text-xs text-red-300">{{ form.errors.password1|striptags }}</p>
+            <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">{{ form.errors.password1|striptags }}</p>
           {% endif %}
         </div>
 
-        <div>
-          <label for="id_password2" class="block text-xs font-medium text-slate-300 mb-1">Confirm password</label>
+        <div class="space-y-1.5">
+          <label for="id_password2" class="block text-sm font-bold text-slate-700 ml-1">Confirm Password</label>
           <div class="relative">
             <input id="id_password2" name="password2" type="password" autocomplete="new-password"
-                   placeholder="Repeat your password"
-                   class="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-3 py-2 pr-12 text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
-            <button type="button" id="togglePwd2" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs px-2">Show</button>
+                   placeholder="••••••••"
+                   class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all" />
+            <button type="button" id="togglePwd2" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 font-bold text-[10px] uppercase tracking-wider px-1">Show</button>
           </div>
           {% if form.errors.password2 %}
-            <p class="mt-1 text-xs text-red-300">{{ form.errors.password2|striptags }}</p>
-          {% endif %}
-        </div>
-
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-3">I am a</label>
-          <div class="space-y-2">
-            {% for value, label in form.role.field.choices %}
-              <div class="flex items-center">
-                <input type="radio" id="id_role_{{ forloop.counter }}" name="role" value="{{ value }}"
-                       {% if form.role.value == value %}checked{% endif %} class="rounded border-slate-600 text-blue-500 focus:ring-blue-500 cursor-pointer" />
-                <label for="id_role_{{ forloop.counter }}" class="ml-2 text-sm text-slate-100 cursor-pointer">{{ label }}</label>
-              </div>
-            {% endfor %}
-          </div>
-          {% if form.errors.role %}
-            <p class="mt-1 text-xs text-red-300">{{ form.errors.role|striptags }}</p>
+            <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">{{ form.errors.password2|striptags }}</p>
           {% endif %}
         </div>
       </div>
 
-      <button type="submit" class="w-full rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium py-2.5 hover:from-blue-600 hover:to-indigo-600 shadow">
-        Create an account
+      <div class="border-t border-slate-100 pt-6">
+        <label class="block text-sm font-bold text-slate-900 mb-4 ml-1">Joining as:</label>
+        <div class="grid grid-cols-2 gap-4">
+          {% for value, label in form.role.field.choices %}
+            <label class="relative flex flex-col p-4 border rounded-2xl cursor-pointer transition-all {% if form.role.value == value %}bg-indigo-50 border-indigo-200 ring-4 ring-indigo-50{% else %}bg-white border-slate-100 hover:bg-slate-50{% endif %}">
+              <input type="radio" name="role" value="{{ value }}" {% if form.role.value == value %}checked{% endif %} class="absolute top-4 right-4 h-4 w-4 text-indigo-600 border-slate-300 focus:ring-indigo-500" />
+              <span class="block text-sm font-bold text-slate-900 mb-1">{{ label }}</span>
+              <span class="block text-xs text-slate-500">{% if value == 'jobseeker' %}I want to find my dream job.{% else %}I want to hire top talent.{% endif %}</span>
+            </label>
+          {% endfor %}
+        </div>
+        {% if form.errors.role %}
+          <p class="text-[10px] text-red-500 font-bold uppercase tracking-wider ml-1 mt-1">{{ form.errors.role|striptags }}</p>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-4 rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 active:scale-95 transition-all text-lg mt-4">
+        Create Your Account
       </button>
 
-      <div class="text-center text-xs text-slate-400">OR SIGN IN WITH</div>
-
-      <div class="grid grid-cols-2 gap-3">
-        <button type="button" class="rounded-xl bg-slate-800/60 border border-slate-700 py-2 text-slate-100">Google</button>
-        <button type="button" class="rounded-xl bg-slate-800/60 border border-slate-700 py-2 text-slate-100">Apple</button>
-      </div>
-
-      <p class="text-center text-xs text-slate-400 mt-3">By creating an account, you agree to our Terms & Service</p>
+      <p class="text-center text-xs text-slate-500 mt-6 leading-relaxed">
+        By continuing, you agree to our 
+        <a href="#" class="text-indigo-600 font-bold hover:underline">Terms of Service</a> 
+        and 
+        <a href="#" class="text-indigo-600 font-bold hover:underline">Privacy Policy</a>
+      </p>
     </form>
-    </div>
   </div>
 </div>
 

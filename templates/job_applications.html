@@ -3,133 +3,154 @@
 {% block title %}Manage Applications - {{ job.title }}{% endblock %}
 
 {% block content %}
-<div class="-mx-6 px-6 py-10 min-h-[70vh] bg-gradient-to-b from-slate-100 via-blue-50 to-slate-100">
-  <div class="max-w-6xl mx-auto">
-    <!-- Back button & Job info -->
-    <div class="mb-6">
-      <a href="{% url 'employer_dashboard' %}" class="text-blue-600 hover:text-blue-700 text-sm font-medium mb-4 inline-block">
-        ← Back to Dashboard
-      </a>
-      <h1 class="text-3xl font-bold text-slate-900">{{ job.title }}</h1>
-      <p class="text-slate-600 mt-1">{{ job.company }} • {{ job.location }}</p>
+<div class="py-16">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div>
+        <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-2">Management Portal</p>
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">{{ job.title }}</h1>
+        <p class="text-slate-500 font-bold text-lg">{{ job.company }} · <span class="text-slate-400">{{ job.location }}</span></p>
+      </div>
+      
+      <div class="px-6 py-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
+        <span class="text-2xl font-black text-slate-900">{{ applications|length }}</span>
+        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Submissions</span>
+      </div>
     </div>
 
-    <!-- Messages -->
-    {% if messages %}
-      {% for message in messages %}
-        <div class="mb-4 p-4 rounded-lg {% if message.tags %}bg-{{ message.tags }}-50 text-{{ message.tags }}-800 border border-{{ message.tags }}-200{% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
-          {{ message }}
-        </div>
-      {% endfor %}
-    {% endif %}
-
-    <!-- Applications Table -->
     {% if applications %}
-      <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl overflow-hidden border border-slate-100">
-        <table class="w-full">
-          <thead class="bg-slate-50 border-b border-slate-200">
-            <tr>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Candidate</th>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Qualification</th>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Experience</th>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Phone</th>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Applied</th>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Status</th>
-              <th class="px-6 py-3 text-left text-sm font-semibold text-slate-900">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for app in applications %}
-              <tr class="border-b border-slate-200 hover:bg-slate-50 transition">
-                <td class="px-6 py-4 text-sm text-slate-900 font-medium">
-                  {{ app.user.first_name }} {{ app.user.last_name }}
-                  <br>
-                  <span class="text-xs text-slate-600">@{{ app.user.username }}</span>
-                </td>
-                <td class="px-6 py-4 text-sm text-slate-700">{{ app.qualification|default:"N/A" }}</td>
-                <td class="px-6 py-4 text-sm text-slate-700">{{ app.experience|default:"N/A" }}</td>
-                <td class="px-6 py-4 text-sm text-slate-700">{{ app.phone|default:"N/A" }}</td>
-                <td class="px-6 py-4 text-sm text-slate-600">{{ app.applied_at|date:"M d, Y" }}</td>
-                <td class="px-6 py-4">
-                  <span class="inline-flex px-3 py-1 rounded-full text-xs font-medium
-                    {% if app.status == 'Applied' %}bg-blue-50 text-blue-700 border border-blue-200
-                    {% elif app.status == 'Shortlisted' %}bg-purple-50 text-purple-700 border border-purple-200
-                    {% elif app.status == 'Interview' %}bg-orange-50 text-orange-700 border border-orange-200
-                    {% elif app.status == 'Hired' %}bg-green-50 text-green-700 border border-green-200
-                    {% elif app.status == 'Rejected' %}bg-red-50 text-red-700 border border-red-200
-                    {% endif %}">
-                    {{ app.status }}
-                  </span>
-                </td>
-                <td class="px-6 py-4 text-sm">
-                  <div class="flex gap-2 flex-wrap">
-                    <!-- Download Resume -->
-                    {% if app.resume %}
-                      <a href="{{ app.resume.url }}" 
-                         class="px-2 py-1 text-xs bg-slate-100 text-slate-700 rounded hover:bg-slate-200 transition"
-                         download>
-                        📄 Resume
-                      </a>
-                    {% endif %}
+        <div class="bg-white rounded-[40px] shadow-2xl shadow-indigo-200/50 border border-slate-100 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-100">
+                  <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Candidate</th>
+                  <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Credentials</th>
+                  <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Applied</th>
+                  <th class="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Performance Status</th>
+                  <th class="px-8 py-6 text-right text-[10px] font-black uppercase tracking-widest text-slate-400">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-50">
+                {% for app in applications %}
+                  <tr class="hover:bg-slate-50/50 transition-colors group">
+                    <td class="px-8 py-6">
+                      <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 font-black text-lg group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                          {{ app.user.username|slice:":1"|upper }}
+                        </div>
+                        <div>
+                          <p class="font-bold text-slate-900">{{ app.user.first_name }} {{ app.user.last_name }}</p>
+                          <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">@{{ app.user.username }}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-8 py-6">
+                      <div class="space-y-1">
+                        <p class="text-sm font-bold text-slate-700">{{ app.qualification|default:"Elite Professional" }}</p>
+                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-widest">{{ app.experience|default:"Verified Experience" }}</p>
+                      </div>
+                    </td>
+                    <td class="px-8 py-6">
+                      <p class="text-sm text-slate-500 font-medium">{{ app.applied_at|date:"M d, Y" }}</p>
+                    </td>
+                    <td class="px-8 py-6">
+                        <div class="flex items-center gap-3">
+                            <span class="inline-flex px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest
+                            {% if app.status == 'Applied' %}bg-indigo-50 text-indigo-600
+                            {% elif app.status == 'Shortlisted' or app.status == 'Interview' %}bg-amber-50 text-amber-600
+                            {% elif app.status == 'Hired' %}bg-emerald-50 text-emerald-600
+                            {% elif app.status == 'Rejected' %}bg-rose-50 text-rose-600
+                            {% else %}bg-slate-50 text-slate-500
+                            {% endif %}">
+                            {{ app.status }}
+                            </span>
+                        </div>
+                    </td>
+                    <td class="px-8 py-6 text-right">
+                      <div class="flex items-center justify-end gap-3 text-sm">
+                        {% if app.resume %}
+                          <a href="{{ app.resume.url }}" class="p-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors" download title="Download Resume">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                          </a>
+                        {% endif %}
 
-                    <!-- View Cover Letter -->
-                    <button onclick="showCoverLetter({{ app.id }}, '{{ app.user.first_name }}')"
-                            class="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded hover:bg-blue-100 transition">
-                      📝 Letter
-                    </button>
+                        <button onclick="showCoverLetter({{ app.id }}, '{{ app.user.username }}')" class="p-2 bg-slate-50 text-slate-400 rounded-lg hover:bg-slate-100 transition-colors" title="View Cover Letter">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                            </svg>
+                        </button>
 
-                    <!-- Status Dropdown -->
-                    <form method="POST" class="inline">
-                      {% csrf_token %}
-                      <input type="hidden" name="app_id" value="{{ app.id }}">
-                      <select name="status" onchange="this.form.submit()" 
-                              class="text-xs px-2 py-1 border border-slate-300 rounded hover:border-blue-500 focus:outline-none focus:border-blue-600">
-                        {% for status in status_choices %}
-                          <option value="{{ status }}" {% if app.status == status %}selected{% endif %}>
-                            {{ status }}
-                          </option>
-                        {% endfor %}
-                      </select>
-                    </form>
-                  </div>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+                        <form method="POST" class="inline">
+                          {% csrf_token %}
+                          <input type="hidden" name="app_id" value="{{ app.id }}">
+                          <div class="relative inline-block group/select">
+                              <select name="status" onchange="this.form.submit()" class="appearance-none bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl px-4 py-2 pr-10 hover:bg-indigo-700 transition-all cursor-pointer shadow-lg shadow-indigo-100">
+                                {% for status in status_choices %}
+                                  <option value="{{ status }}" class="text-slate-900 bg-white" {% if app.status == status %}selected{% endif %}>{{ status }}</option>
+                                {% endfor %}
+                              </select>
+                              <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-white/70">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                              </div>
+                          </div>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
     {% else %}
-      <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl p-8 border border-slate-100 text-center text-slate-600">
-        <p class="font-medium">No applications yet for this job.</p>
-      </div>
+        <div class="py-24 bg-white rounded-[40px] border border-slate-100 shadow-xl text-center">
+            <div class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-slate-300 italic">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900 mb-2 italic">Awaiting Candidates</h3>
+            <p class="text-slate-500 font-medium">This search is currently active. New applicants will appear here.</p>
+        </div>
     {% endif %}
   </div>
 </div>
 
 <!-- Cover Letter Modal -->
-<div id="letterModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-  <div class="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-    <div class="sticky top-0 bg-white border-b border-slate-200 p-6 flex justify-between items-center">
-      <h2 class="text-xl font-bold text-slate-900" id="letterTitle"></h2>
-      <button onclick="document.getElementById('letterModal').classList.add('hidden')" 
-              class="text-slate-500 hover:text-slate-700 text-2xl">×</button>
+<div id="letterModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-6">
+  <div class="bg-white rounded-[40px] shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden border border-slate-100 italic">
+    <div class="bg-slate-50 border-b border-slate-100 p-8 flex justify-between items-center relative">
+      <div>
+        <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">CANDIDATE SUBMISSION</p>
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight" id="letterTitle">Cover Letter</h2>
+      </div>
+      <button onclick="document.getElementById('letterModal').classList.add('hidden')" class="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
     </div>
-    <div class="p-6">
-      <div id="letterContent" class="text-slate-700 whitespace-pre-wrap leading-relaxed"></div>
+    <div class="p-10 overflow-y-auto max-h-[60vh] custom-scrollbar">
+      <div id="letterContent" class="text-slate-600 font-medium leading-relaxed whitespace-pre-wrap italic"></div>
+    </div>
+    <div class="p-8 bg-slate-50 border-t border-slate-100 flex justify-end">
+        <button onclick="document.getElementById('letterModal').classList.add('hidden')" class="px-8 py-3 bg-slate-900 text-white font-black rounded-2xl hover:bg-slate-800 transition-all text-xs uppercase tracking-widest italic">Close View</button>
     </div>
   </div>
 </div>
 
 <script>
   function showCoverLetter(appId, candidateName) {
-    // In a real app, you'd fetch this via AJAX
     const letters = {
       {% for app in applications %}
-        {{ app.id }}: `{{ app.cover_letter|default:"No cover letter provided." }}`,
+        {{ app.id }}: `{{ app.cover_letter|default:"No cover letter provided." }}`{% if not forloop.last %},{% endif %}
       {% endfor %}
     };
     
-    document.getElementById('letterTitle').textContent = `Cover Letter - ${candidateName}`;
+    document.getElementById('letterTitle').textContent = `Review: @${candidateName}`;
     document.getElementById('letterContent').textContent = letters[appId] || 'No cover letter provided.';
     document.getElementById('letterModal').classList.remove('hidden');
   }

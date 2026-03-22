@@ -1,40 +1,87 @@
 {% extends "base.html" %}
 {% block title %}My Profile{% endblock %}
 {% block content %}
-<div class="min-h-[60vh] flex items-center justify-center">
-  <div class="w-full max-w-2xl bg-white/95 backdrop-blur shadow-md rounded-2xl p-6 border border-slate-100">
-    <h1 class="text-2xl font-bold text-slate-900 mb-6">My Profile</h1>
-    <dl class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-      <div>
-        <dt class="text-slate-500">Role</dt>
-        <dd class="font-medium">{{ profile.role|title }}</dd>
+<div class="py-16">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="bg-white rounded-[40px] shadow-2xl shadow-indigo-200/50 border border-slate-100 overflow-hidden relative">
+      <!-- Header Decoration -->
+      <div class="h-32 bg-gradient-to-r from-indigo-600 to-violet-600 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20 mesh-bg"></div>
       </div>
-      <div>
-        <dt class="text-slate-500">Full name</dt>
-        <dd class="font-medium">{{ profile.full_name|default:"—" }}</dd>
-      </div>
-      <div>
-        <dt class="text-slate-500">Phone</dt>
-        <dd class="font-medium">{{ profile.phone|default:"—" }}</dd>
-      </div>
-      <div>
-        <dt class="text-slate-500">Location</dt>
-        <dd class="font-medium">{{ profile.location|default:"—" }}</dd>
-      </div>
-      <div class="md:col-span-2">
-        <dt class="text-slate-500">Resume</dt>
-        <dd class="font-medium">
-          {% if profile.resume %}
-            <a href="{{ profile.resume.url }}" class="text-blue-600 hover:text-blue-700">Download resume</a>
-          {% else %}
-            —
+      
+      <div class="px-10 pb-10 relative">
+        <!-- Profile Picture / Initials -->
+        <div class="absolute -top-12 left-10">
+          <div class="w-24 h-24 rounded-3xl bg-white p-1.5 shadow-xl shadow-indigo-100 italic">
+            <div class="w-full h-full rounded-[22px] bg-indigo-50 flex items-center justify-center text-3xl font-black text-indigo-600">
+              {{ profile.full_name|default:user.username|slice:":1"|upper }}
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-16 flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ profile.full_name|default:user.username }}</h1>
+            <p class="text-indigo-600 font-bold text-sm uppercase tracking-widest mt-1">{{ profile.role|title }}</p>
+          </div>
+          <a href="{% url 'profile_edit' %}" class="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white font-bold rounded-2xl hover:bg-black transition-all shadow-lg active:scale-95">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+            </svg>
+            Edit Profile
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+          <div class="space-y-1">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Phone Number</p>
+            <p class="text-slate-900 font-bold">{{ profile.phone|default:"Not provided" }}</p>
+          </div>
+          
+          <div class="space-y-1">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Main Location</p>
+            <p class="text-slate-900 font-bold">{{ profile.location|default:"Not provided" }}</p>
+          </div>
+
+          {% if profile.role == 'jobseeker' %}
+          <div class="md:col-span-2 space-y-3 p-6 bg-slate-50 rounded-3xl border border-slate-100">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Resume</p>
+            <div class="flex items-center justify-between">
+              {% if profile.resume %}
+                <div class="flex items-center gap-3">
+                  <div class="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <span class="text-sm font-bold text-slate-700">resume_v1.pdf</span>
+                </div>
+                <a href="{{ profile.resume.url }}" class="text-sm font-bold text-indigo-600 hover:text-indigo-700 underline underline-offset-4">Download</a>
+              {% else %}
+                <p class="text-sm font-medium text-slate-400 italic">No resume uploaded yet</p>
+                <a href="{% url 'profile_edit' %}" class="text-sm font-bold text-indigo-600 hover:text-indigo-700">Upload Now</a>
+              {% endif %}
+            </div>
+          </div>
           {% endif %}
-        </dd>
+
+          {% if profile.role == 'employer' %}
+          <div class="md:col-span-2 space-y-3 p-6 bg-slate-50 rounded-3xl border border-slate-100">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Company Portal</p>
+            <div class="flex items-center gap-4">
+              {% if profile.company_logo %}
+                <img src="{{ profile.company_logo.url }}" alt="Logo" class="w-14 h-14 rounded-xl object-cover border border-white shadow-sm">
+              {% endif %}
+              <div>
+                <p class="font-black text-slate-900">{{ profile.company_name|default:"Company Name" }}</p>
+                <a href="{{ profile.company_website }}" target="_blank" class="text-sm font-bold text-indigo-600 hover:text-indigo-700">{{ profile.company_website|default:"website.com" }}</a>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
       </div>
-    </dl>
-    <div class="mt-6">
-      <a href="{% url 'profile_edit' %}" class="inline-flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 shadow-sm">Edit Profile</a>
     </div>
   </div>
-  </div>
+</div>
 {% endblock %}

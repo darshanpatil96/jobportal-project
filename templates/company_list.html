@@ -3,64 +3,74 @@
 {% block title %}Companies{% endblock %}
 
 {% block content %}
-<div class="-mx-6 px-6 py-10 min-h-[70vh] bg-gradient-to-b from-slate-100 via-blue-50 to-slate-100">
-  <div class="max-w-6xl mx-auto">
-    <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-2">Explore Companies</h1>
-    <p class="text-slate-600 mb-8">Discover great companies hiring in your field</p>
+<div class="py-16">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="mb-16">
+        <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-2">Directory</p>
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">Partner Companies</h1>
+        <p class="text-slate-500 font-medium">Discover top-tier organizations building the future with elite talent.</p>
+    </div>
 
     {% if companies %}
-      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
         {% for company in companies %}
-          <article class="bg-white/95 backdrop-blur shadow-md rounded-2xl p-6 border border-slate-100 hover:shadow-lg transition">
-            <!-- Company Logo / Avatar -->
-            <div class="flex items-center gap-4 mb-4">
-              {% if company.company_logo %}
-                <img src="{{ company.company_logo.url }}" alt="{{ company.company_name }}" 
-                     class="w-16 h-16 rounded-full object-cover">
-              {% else %}
-                <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
-                  <span class="text-2xl">🏢</span>
-                </div>
-              {% endif %}
+          <article class="group bg-white rounded-[40px] p-8 border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-indigo-100/30 transition-all duration-300 relative flex flex-col">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-50/30 rounded-bl-[80px] -mr-8 -mt-8"></div>
+            
+            <div class="flex items-center gap-6 mb-8 relative">
+              <div class="w-16 h-16 rounded-[20px] bg-slate-50 p-2 italic flex items-center justify-center group-hover:bg-indigo-50 transition-colors shrink-0">
+                {% if company.company_logo %}
+                  <img src="{{ company.company_logo.url }}" alt="{{ company.company_name }}" class="w-full h-full object-contain">
+                {% else %}
+                  <span class="text-2xl text-slate-300 font-black">{{ company.company_name|slice:":1"|upper }}</span>
+                {% endif %}
+              </div>
 
-              <div class="flex-1">
-                <h2 class="text-lg font-semibold text-slate-900">
+              <div class="min-w-0">
+                <h2 class="text-xl font-extrabold text-slate-900 group-hover:text-indigo-600 transition-colors truncate">
                   {{ company.company_name|default:company.user.username }}
                 </h2>
-                <p class="text-sm text-slate-600">{{ company.job_count }} active job{{ company.job_count|pluralize }}</p>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ company.job_count }} Active Role{{ company.job_count|pluralize }}</p>
+                </div>
               </div>
             </div>
 
-            <!-- Company Description -->
             {% if company.company_description %}
-              <p class="text-sm text-slate-700 mb-4 line-clamp-3">
-                {{ company.company_description }}
+              <p class="text-sm font-medium text-slate-600 leading-relaxed mb-8 line-clamp-3 italic">
+                "{{ company.company_description }}"
               </p>
             {% endif %}
 
-            <!-- Company Website -->
-            {% if company.company_website %}
-              <p class="text-xs text-slate-600 mb-4">
-                <a href="{{ company.company_website }}" target="_blank" class="text-blue-600 hover:text-blue-700">
-                  🔗 {{ company.company_website|truncatewords:3 }}
+            <div class="mt-auto space-y-4">
+                {% if company.company_website %}
+                    <a href="{{ company.company_website }}" target="_blank" class="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-indigo-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Website
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'company_detail' company.id %}" class="block w-full text-center py-4 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all active:scale-95 text-xs uppercase tracking-widest">
+                  View Profile
                 </a>
-              </p>
-            {% endif %}
-
-            <!-- View Company Button -->
-            <a href="{% url 'company_detail' company.id %}" 
-               class="inline-block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition">
-              View Company & Jobs
-            </a>
+            </div>
           </article>
         {% endfor %}
       </div>
     {% else %}
-      <div class="bg-white/95 backdrop-blur shadow-md rounded-2xl p-12 border border-slate-100 text-center">
-        <p class="text-slate-600 text-lg font-medium">No companies found with active jobs.</p>
-        <a href="{% url 'job_list' %}" class="text-blue-600 hover:text-blue-700 text-sm mt-2 inline-block">
-          Browse all jobs →
-        </a>
+      <div class="py-24 bg-white rounded-[40px] border border-slate-100 shadow-xl text-center">
+        <div class="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-slate-300">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-slate-900 mb-2">No active partners</h3>
+        <p class="text-slate-500 font-medium mb-8">Great things are coming. Check back soon for company listings.</p>
+        <a href="{% url 'job_list' %}" class="px-10 py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all">Browse Opportunities</a>
       </div>
     {% endif %}
   </div>

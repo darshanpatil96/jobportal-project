@@ -39,3 +39,4 @@ htmlcov/
 venv/
 env/
 ENV/
+.venv/

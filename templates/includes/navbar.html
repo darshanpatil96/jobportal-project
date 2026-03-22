@@ -1,0 +1,99 @@
+<nav class="fixed w-full top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16 lg:h-20">
+            <a href="{% url 'home' %}" class="font-heading font-bold text-2xl text-dark">
+                ARTISAN<span class="text-primary">.</span>
+            </a>
+
+            <div class="hidden lg:flex items-center space-x-8">
+                <a href="{% url 'job_list' %}" class="text-gray-600 hover:text-primary transition-colors font-medium">Find Jobs</a>
+                <a href="{% url 'companies' %}" class="text-gray-600 hover:text-primary transition-colors font-medium">Companies</a>
+            </div>
+
+            <div class="hidden lg:flex items-center space-x-4">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'saved_jobs' %}" class="text-gray-600 hover:text-primary transition-colors" title="Saved Jobs">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                    </a>
+                    {% if user.userprofile.role == 'employer' %}
+                        <a href="{% url 'employer_dashboard' %}" class="text-gray-600 hover:text-primary transition-colors font-medium">Dashboard</a>
+                        <a href="{% url 'create_job' %}" class="btn-primary text-white px-5 py-2 rounded-full font-semibold text-sm">Post Job</a>
+                    {% else %}
+                        <a href="{% url 'jobseeker_dashboard' %}" class="text-gray-600 hover:text-primary transition-colors font-medium">Dashboard</a>
+                    {% endif %}
+                    <a href="{% url 'notifications' %}" class="text-gray-600 hover:text-primary transition-colors relative" title="Notifications">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                        </svg>
+                        {% if unread_notification_count > 0 %}
+                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">{{ unread_notification_count }}</span>
+                        {% endif %}
+                    </a>
+                    <div class="relative group">
+                        <button class="flex items-center gap-2 text-gray-600 hover:text-primary">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-sm">
+                                {{ user.username|slice:":1"|upper }}
+                            </div>
+                            <span class="font-medium">{{ user.username }}</span>
+                        </button>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                            <a href="{% url 'profile' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-t-xl">Profile</a>
+                            <a href="{% url 'account_logout' %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-b-xl">Logout</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-gray-600 hover:text-primary transition-colors font-medium px-4 py-2">Log In</a>
+                    <a href="{% url 'register' %}" class="btn-primary text-white px-6 py-2.5 rounded-full font-semibold text-sm">Sign Up</a>
+                {% endif %}
+            </div>
+
+            <button id="dark-mode-toggle" class="p-2 rounded-lg hover:bg-gray-100">
+                <svg class="w-5 h-5 text-gray-600 moon-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                </svg>
+                <svg class="w-5 h-5 text-gray-600 sun-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+            </button>
+
+            <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-gray-100">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-100 px-6 py-4">
+        <div class="flex flex-col space-y-4">
+            <a href="{% url 'job_list' %}" class="text-gray-600 hover:text-primary font-medium py-2">Find Jobs</a>
+            <a href="{% url 'companies' %}" class="text-gray-600 hover:text-primary font-medium py-2">Companies</a>
+            <hr class="border-gray-100">
+            {% if user.is_authenticated %}
+                <a href="{% url 'saved_jobs' %}" class="text-gray-600 hover:text-primary font-medium py-2">Saved Jobs</a>
+                {% if user.userprofile.role == 'employer' %}
+                    <a href="{% url 'employer_dashboard' %}" class="text-gray-600 hover:text-primary font-medium py-2">Dashboard</a>
+                    <a href="{% url 'create_job' %}" class="text-gray-600 hover:text-primary font-medium py-2">Post Job</a>
+                {% else %}
+                    <a href="{% url 'jobseeker_dashboard' %}" class="text-gray-600 hover:text-primary font-medium py-2">Dashboard</a>
+                {% endif %}
+                <a href="{% url 'profile' %}" class="text-gray-600 hover:text-primary font-medium py-2">Profile</a>
+                <a href="{% url 'account_logout' %}" class="text-gray-600 hover:text-primary font-medium py-2">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="text-gray-600 hover:text-primary font-medium py-2">Log In</a>
+                <a href="{% url 'register' %}" class="btn-primary text-white px-6 py-2.5 rounded-full font-semibold text-sm text-center">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+{% if messages %}
+<div class="fixed top-20 right-4 z-50 space-y-2 max-w-sm">
+    {% for message in messages %}
+    <div class="px-4 py-3 rounded-xl shadow-lg text-sm font-medium animate-fade-in {% if message.tags == 'error' %}bg-red-50 text-red-700 border border-red-200{% elif message.tags == 'success' %}bg-green-50 text-green-700 border border-green-200{% elif message.tags == 'warning' %}bg-yellow-50 text-yellow-700 border border-yellow-200{% else %}bg-blue-50 text-blue-700 border border-blue-200{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

@@ -2,20 +2,61 @@
 {% block title %}Sign up{% endblock %}
 
 {% block content %}
-<div class="relative">
-  <div class="fixed inset-0 bg-[url('https://images.pexels.com/photos/1181675/pexels-photo-1181675.jpeg')] bg-cover bg-center"></div>
-  <div class="fixed inset-0 bg-gradient-to-b from-black/60 via-slate-900/65 to-indigo-950/75"></div>
+<div class="min-h-screen py-20 flex flex-col items-center justify-center relative overflow-hidden italic">
+  <div class="absolute inset-0 z-0 mesh-bg opacity-40"></div>
+  
+  <div class="w-full max-w-xl px-6 relative z-10">
+    <div class="text-center mb-10">
+      <div class="w-16 h-16 bg-white rounded-2xl shadow-2xl flex items-center justify-center mx-auto mb-6 text-indigo-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+        </svg>
+      </div>
+      <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Create Identity</h1>
+      <p class="text-slate-500 font-bold mt-2">Join a global network of elite professionals</p>
+    </div>
 
-  <div class="relative z-10 min-h-screen flex items-center justify-center">
-    <div class="w-full max-w-md bg-slate-900/70 text-slate-100 backdrop-blur-xl border border-slate-800 shadow-2xl rounded-3xl p-6">
-    <h1 class="text-xl font-semibold mb-4">Sign up</h1>
-    <form method="post" class="space-y-4">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="w-full rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium py-2.5 hover:from-blue-600 hover:to-indigo-600 shadow">Sign up</button>
-    </form>
+    <div class="bg-white/90 backdrop-blur-3xl rounded-[40px] p-10 md:p-12 shadow-2xl shadow-indigo-200/50 border border-slate-100">
+      <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="space-y-5">
+            {% for field in form %}
+                <div class="space-y-1.5">
+                    <label for="{{ field.id_for_label }}" class="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{{ field.label }}</label>
+                    <div class="relative">
+                        {% if field.field.widget.input_type == 'select' %}
+                            <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="w-full px-6 py-4 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-bold focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all appearance-none cursor-pointer">
+                                {% for choice in field.field.choices %}
+                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                            <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}" id="{{ field.id_for_label }}" class="w-full px-6 py-4 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-bold focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all placeholder-slate-300">
+                        {% endif %}
+                    </div>
+                    {% if field.errors %}
+                        <p class="text-rose-500 text-[10px] font-bold mt-1 ml-1 uppercase tracking-widest">{{ field.errors|striptags }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
 
-    <p class="mt-4 text-center text-sm text-slate-300">Already have an account? <a href="{% url 'login' %}" class="text-blue-400 hover:text-blue-300">Log in</a></p>
+        <button type="submit" class="w-full py-5 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 active:scale-95 transition-all text-sm uppercase tracking-widest mt-4">
+          Establish Account
+        </button>
+      </form>
+
+      <div class="mt-10 pt-10 border-t border-slate-50 text-center">
+        <p class="text-sm font-bold text-slate-400 italic">
+          Already part of the network? 
+          <a href="{% url 'login' %}" class="text-indigo-600 hover:text-indigo-700 font-black ml-1">Authenticate →</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-10 text-center">
+        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">JobPortal · Secure Professional Infrastructure</p>
     </div>
   </div>
 </div>

@@ -3,60 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>{% block title %}Job Portal{% endblock %}</title>
-
+    <title>{% block title %}ARTISAN. - Creative Job Marketplace{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'heading': ['Space Grotesk', 'sans-serif'],
+                        'body': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#6366f1',
+                        'primary-dark': '#4f46e5',
+                        'secondary': '#f97316',
+                        'dark': '#0f172a',
+                        'light': '#f8fafc',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 50%, #f0f9ff 100%);
+        }
+        .dark .hero-gradient {
+            background: linear-gradient(135deg, #1e293b 0%, #312e81 50%, #1e3a5f 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.5;
+            animation: float 8s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -30px); }
+        }
+        .category-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            transition: all 0.3s ease;
+        }
+        .dark .category-card {
+            background: linear-gradient(145deg, #1e293b 0%, #334155 100%);
+        }
+        .category-card:hover {
+            background: linear-gradient(145deg, #6366f1 0%, #8b5cf6 100%);
+            transform: translateY(-4px);
+        }
+        .category-card:hover .industry-icon,
+        .category-card:hover .industry-title {
+            color: white;
+        }
+        .job-card {
+            transition: all 0.3s ease;
+        }
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.1);
+        }
+        .dark .job-card {
+            background-color: #1e293b;
+            border-color: #334155;
+        }
+        .dark .job-card:hover {
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
+        }
+        .company-logo {
+            transition: all 0.3s ease;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c7c7c7;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+    </style>
 </head>
-
-<body class="bg-gray-100">
-
-    <!-- Navbar -->
-    <nav class="bg-white shadow-md fixed w-full top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="{% url 'home' %}" class="text-2xl font-bold text-blue-600">JobPortal</a>
-
-            <div class="space-x-6 flex items-center">
-                <a href="{% url 'home' %}" class="hover:text-blue-600">Home</a>
-                <a href="{% url 'job_list' %}" class="hover:text-blue-600">Find Jobs</a>
-                <a href="{% url 'companies' %}" class="hover:text-blue-600">Companies</a>
-                <a href="{% url 'about' %}" class="hover:text-blue-600">About</a>
-                {% if user.is_authenticated and user.userprofile.role == 'employer' %}
-                    <a href="{% url 'employer_dashboard' %}" class="hover:text-blue-600 font-medium text-blue-600">Dashboard</a>
-                {% elif user.is_authenticated and user.userprofile.role != 'employer' %}
-                    <a href="{% url 'jobseeker_dashboard' %}" class="hover:text-blue-600 font-medium text-blue-600">Dashboard</a>
-                {% endif %}
-                {% if user.is_authenticated and user.userprofile.role != 'employer' %}
-                    <a href="{% url 'my_applications' %}" class="hover:text-blue-600">My Applications</a>
-                    <a href="{% url 'saved_jobs' %}" class="hover:text-blue-600">Saved Jobs</a>
-                {% endif %}
-
-                {% if user.is_authenticated %}
-                    <!-- Notification bell -->
-                    <a href="{% url 'notifications' %}" class="relative inline-flex items-center justify-center w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 mr-2" aria-label="Notifications">
-                        <span class="text-xl">&#128276;</span>
-                        {% if unread_notification_count > 0 %}
-                            <span class="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-red-500 rounded-full">
-                                {{ unread_notification_count }}
-                            </span>
-                        {% endif %}
-                    </a>
-
-                    <a href="{% url 'profile' %}" class="hover:text-blue-600">My Profile</a>
-                    <a href="{% url 'logout' %}" class="hover:text-blue-600">Logout</a>
-                {% else %}
-                    <a href="{% url 'login' %}" class="hover:text-blue-600">Login</a>
-                    <a href="{% url 'register' %}" class="bg-blue-600 text-white px-4 py-1 rounded-lg hover:bg-blue-700">Register</a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
-
-    <!-- Page Content -->
-    <div class="pt-24 px-6 max-w-7xl mx-auto">
-        {% block content %}
-        {% endblock %}
-    </div>
-
+<body class="bg-white dark:bg-slate-900 antialiased transition-colors duration-300">
+    {% block content %}
+    {% endblock %}
+    
+    <script>
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const html = document.documentElement;
+        
+        // Check for saved theme preference or default to system preference
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            html.classList.add('dark');
+        }
+        
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('click', () => {
+                html.classList.toggle('dark');
+                localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+                
+                // Update icon
+                const moonIcon = darkModeToggle.querySelector('.moon-icon');
+                const sunIcon = darkModeToggle.querySelector('.sun-icon');
+                if (html.classList.contains('dark')) {
+                    moonIcon.classList.add('hidden');
+                    sunIcon.classList.remove('hidden');
+                } else {
+                    moonIcon.classList.remove('hidden');
+                    sunIcon.classList.add('hidden');
+                }
+            });
+        }
+    </script>
 </body>
 </html>
