@@ -1,0 +1,6 @@
+Watching for file changes with StatReloader
+[21/Mar/2026 13:46:33] "GET / HTTP/1.1" 200 31594
+[21/Mar/2026 13:46:33] "GET /static/css/design_system.css HTTP/1.1" 304 0
+[21/Mar/2026 13:46:33] "GET /static/images/hero_illustration.png HTTP/1.1" 200 64291
+Not Found: /favicon.ico
+[21/Mar/2026 13:46:34] "GET /favicon.ico HTTP/1.1" 404 2836

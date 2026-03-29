@@ -44,3 +44,39 @@
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgba(99, 102, 241, 0.3);
 }
+
+/* ─────────────────────────────────────────
+   Job Cards Premium Styling
+   ───────────────────────────────────────── */
+
+.job-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.job-card:hover {
+    transform: translateY(-8px);
+}
+
+.btn-primary-sm {
+    background: #6366f1; /* Fallback */
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+    color: white !important;
+}
+
+.btn-primary-sm:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.save-job-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Section Title Hover Effect */
+.gradient-text {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

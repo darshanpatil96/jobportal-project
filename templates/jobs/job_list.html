@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Find Jobs - ARTISAN{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
+    <!-- Header -->
+    <div class="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+            <h1 class="text-3xl font-bold text-dark dark:text-white mb-2">Find Your Dream Job</h1>
+            <p class="text-gray-500 dark:text-gray-400">{{ total_jobs|default:"0" }} jobs from top companies</p>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Filters Sidebar -->
+            <aside class="lg:w-72 flex-shrink-0">
+                <div class="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 sticky top-24">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="font-heading font-semibold text-lg text-dark dark:text-white">Filters</h2>
+                        {% if has_filters %}
+                        <a href="{% url 'job_list' %}" class="text-sm text-primary hover:underline">Clear all</a>
+                        {% endif %}
+                    </div>
+
+                    <form method="get" id="filter-form" class="space-y-5">
+                        {% if q %}<input type="hidden" name="q" value="{{ q }}">{% endif %}
+                        {% if location %}<input type="hidden" name="location" value="{{ location }}">{% endif %}
+                        {% if sort %}<input type="hidden" name="sort" value="{{ sort }}">{% endif %}
+                        {% if remote_only %}<input type="hidden" name="remote_only" value="{{ remote_only }}">{% endif %}
+                        {% if internships_only %}<input type="hidden" name="internships_only" value="{{ internships_only }}">{% endif %}
+                        {% if entry_level_only %}<input type="hidden" name="entry_level_only" value="{{ entry_level_only }}">{% endif %}
+
+                        <!-- Job Type -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Job Type</label>
+                            <div class="space-y-2">
+                                {% for value, label in job_types %}
+                                <label class="flex items-center gap-3 cursor-pointer group">
+                                    <input type="checkbox" name="job_type" value="{{ value }}" 
+                                        {% if value in selected_job_types %}checked{% endif %}
+                                        class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary dark:border-slate-600">
+                                    <span class="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">{{ label }}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Category -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
+                            <select name="category" class="w-full px-4 py-2.5 border border-gray-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-sm bg-white dark:bg-slate-700 text-gray-900 dark:text-white">
+                                <option value="">All Categories</option>
+                                {% for cat in categories %}
+                                <option value="{{ cat }}" {% if category == cat %}selected{% endif %}>{{ cat }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <button type="submit" class="w-full btn-primary text-white font-semibold py-3 rounded-xl">
+                            Apply Filters
+                        </button>
+                    </form>
+                </div>
+            </aside>
+
+            <!-- Job Listings -->
+            <main class="flex-1">
+                <!-- Results Header -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <p class="text-gray-600 dark:text-gray-400">
+                        <span class="font-semibold text-dark dark:text-white">{{ page_obj.paginator.count }}</span> jobs found
+                    </p>
+                    <select id="sort-select" class="px-4 py-2 border border-gray-200 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-white dark:bg-slate-800 text-gray-900 dark:text-white">
+                        <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest First</option>
+                        <option value="salary" {% if sort == 'salary' %}selected{% endif %}>Highest Salary</option>
+                    </select>
+                </div>
+
+                <!-- Quick Filter Chips -->
+                <div class="flex flex-wrap gap-2 mb-6">
+                    <a href="?{% if q %}q={{ q }}&{% endif %}{% if location %}location={{ location }}&{% endif %}{% if category %}category={{ category }}&{% endif %}{% if sort %}sort={{ sort }}&{% endif %}{% if internships_only %}internships_only={{ internships_only }}&{% endif %}{% if entry_level_only %}entry_level_only={{ entry_level_only }}&{% endif %}remote_only={% if remote_only %}{% else %}1{% endif %}"
+                       class="px-4 py-2 {% if remote_only %}bg-primary text-white{% else %}bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-gray-600 dark:text-gray-400{% endif %} text-sm font-medium rounded-full transition-colors">
+                        Remote
+                    </a>
+                    
+                    <a href="?{% if q %}q={{ q }}&{% endif %}{% if location %}location={{ location }}&{% endif %}{% if category %}category={{ category }}&{% endif %}{% if sort %}sort={{ sort }}&{% endif %}{% if remote_only %}remote_only={{ remote_only }}&{% endif %}{% if entry_level_only %}entry_level_only={{ entry_level_only }}&{% endif %}internships_only={% if internships_only %}{% else %}1{% endif %}"
+                       class="px-4 py-2 {% if internships_only %}bg-primary text-white{% else %}bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-gray-600 dark:text-gray-400{% endif %} text-sm font-medium rounded-full transition-colors">
+                        Internships
+                    </a>
+
+                    <a href="?{% if q %}q={{ q }}&{% endif %}{% if location %}location={{ location }}&{% endif %}{% if category %}category={{ category }}&{% endif %}{% if sort %}sort={{ sort }}&{% endif %}{% if remote_only %}remote_only={{ remote_only }}&{% endif %}{% if internships_only %}internships_only={{ internships_only }}&{% endif %}entry_level_only={% if entry_level_only %}{% else %}1{% endif %}"
+                       class="px-4 py-2 {% if entry_level_only %}bg-primary text-white{% else %}bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-gray-600 dark:text-gray-400{% endif %} text-sm font-medium rounded-full transition-colors">
+                        Entry Level
+                    </a>
+                </div>
+
+                <!-- Job Cards -->
+                <div class="grid sm:grid-cols-2 gap-6">
+                    {% for job in page_obj %}
+                    <article class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-gray-100 dark:border-slate-700 job-card group hover:border-primary/30 hover:shadow-xl transition-all duration-300 relative">
+                        <!-- Status Badges -->
+                        <div class="absolute top-6 left-6 flex flex-wrap gap-2">
+                            {% if job.id in applied_job_ids %}
+                            <span class="inline-flex items-center px-3 py-1 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold rounded-full border border-green-100 dark:border-green-800">
+                                ✓ Applied
+                            </span>
+                            {% endif %}
+                            {% if user_is_employer %}
+                            <span class="inline-flex items-center px-3 py-1 bg-primary/10 text-primary text-xs font-bold rounded-full">
+                                {{ job.app_count }} applicant{{ job.app_count|pluralize:"s" }}
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Save Button -->
+                        {% if user.is_authenticated and user.userprofile.role != 'employer' %}
+                        <div class="absolute top-6 right-6">
+                            <form method="post" action="{% url 'toggle_save_job' job.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                <button type="submit" class="p-2 bg-gray-50 dark:bg-slate-700 text-gray-400 hover:text-red-500 rounded-full transition-all hover:bg-red-50 dark:hover:bg-red-900/30" title="{% if job.id in saved_job_ids %}Unsave{% else %}Save{% endif %}">
+                                    <svg class="w-5 h-5 {% if job.id in saved_job_ids %}fill-red-500 text-red-500{% else %}fill-none stroke-current{% endif %}" viewBox="0 0 24 24" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+
+                        <div class="mt-8 mb-5">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-purple-100 dark:from-primary/20 dark:to-purple-900/20 flex items-center justify-center text-primary font-bold text-xl mb-4">
+                                {{ job.company|slice:":2"|upper }}
+                            </div>
+                            <h2 class="text-xl font-bold text-dark dark:text-white leading-tight pr-8 mb-1">
+                                <a href="{% url 'job_detail' job.id %}" class="hover:text-primary transition-colors">{{ job.title }}</a>
+                            </h2>
+                            <p class="text-primary font-medium">{{ job.company }}</p>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400 mb-5">
+                            <span class="flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                </svg>
+                                {{ job.location }}
+                            </span>
+                            <span class="px-2.5 py-0.5 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 text-xs font-medium rounded-full">
+                                {{ job.get_job_type_display }}
+                            </span>
+                        </div>
+
+                        {% if job.salary %}
+                        <div class="text-primary font-semibold mb-5">
+                            {{ job.salary }}
+                        </div>
+                        {% endif %}
+
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-slate-700">
+                            <span class="text-gray-400 text-xs">{{ job.posted_at|timesince }} ago</span>
+                            <a href="{% url 'job_detail' job.id %}" class="text-primary font-medium text-sm hover:underline">View Details →</a>
+                        </div>
+                    </article>
+                    {% empty %}
+                    <div class="col-span-full">
+                        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-12 text-center">
+                            <div class="w-20 h-20 mx-auto mb-4 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center">
+                                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-dark dark:text-white mb-2">No jobs found</h3>
+                            <p class="text-gray-500 dark:text-gray-400 mb-6">Try adjusting your filters or search terms</p>
+                            <a href="{% url 'job_list' %}" class="inline-flex items-center gap-2 btn-primary text-white px-6 py-3 rounded-xl font-semibold">
+                                Clear Filters
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.paginator.num_pages > 1 %}
+                <div class="mt-10 flex items-center justify-center gap-2">
+                    {% if page_obj.has_previous %}
+                    <a href="?q={{ q }}&location={{ location }}&category={{ category }}&sort={{ sort }}&remote_only={{ remote_only }}&internships_only={{ internships_only }}&entry_level_only={{ entry_level_only }}&page={{ page_obj.previous_page_number }}" 
+                       class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors text-gray-600 dark:text-gray-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <span class="px-4 py-2 bg-primary text-white font-semibold rounded-xl">{{ num }}</span>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?q={{ q }}&location={{ location }}&category={{ category }}&sort={{ sort }}&remote_only={{ remote_only }}&internships_only={{ internships_only }}&entry_level_only={{ entry_level_only }}&page={{ num }}" 
+                           class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors text-gray-600 dark:text-gray-400">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <a href="?q={{ q }}&location={{ location }}&category={{ category }}&sort={{ sort }}&remote_only={{ remote_only }}&internships_only={{ internships_only }}&entry_level_only={{ entry_level_only }}&page={{ page_obj.next_page_number }}" 
+                       class="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors text-gray-600 dark:text-gray-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('sort-select').addEventListener('change', function() {
+        const params = new URLSearchParams(window.location.search);
+        params.set('sort', this.value);
+        params.delete('page');
+        window.location.search = params.toString();
+    });
+
+    document.querySelectorAll('input[name="job_type"]').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+            document.getElementById('filter-form').submit();
+        });
+    });
+</script>
+{% endblock %}

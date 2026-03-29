@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}{% if action == "Edit" %}Edit {{ job.title }}{% else %}Post a Job{% endif %}{% endblock %}
+
+{% block content %}
+<div class="py-16">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="mb-10 text-center">
+      {% if action == "Edit" %}
+        <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-2 italic">Management</p>
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Refine Job Details</h1>
+        <p class="text-slate-500 font-medium">{{ job.title }} · <span class="text-indigo-400 font-black italic">{{ job.company }}</span></p>
+      {% else %}
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Publish New Opportunity</h1>
+        <p class="text-slate-500 font-medium">Reach top talent by sharing your technical requirements.</p>
+      {% endif %}
+    </div>
+
+    <div class="bg-white p-10 md:p-12 rounded-[40px] shadow-2xl shadow-indigo-200/50 border border-slate-100">
+      <form method="post" class="space-y-8">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="space-y-6">
+          {% for field in form %}
+            <div class="space-y-1.5">
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider ml-1" for="{{ field.id_for_label }}">
+                {{ field.label|upper }}
+              </label>
+
+              <div class="relative">
+                {% if field.field.widget.input_type == 'select' or field.name == 'job_type' or field.name == 'status' %}
+                    <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="w-full px-6 py-4 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-bold focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all appearance-none cursor-pointer italic">
+                        {% for choice in field.field.choices %}
+                            <option value="{{ choice.0 }}" {% if field.value == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                {% elif field.name == 'description' %}
+                    <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" rows="8" class="w-full px-6 py-4 rounded-[32px] border border-slate-200 bg-slate-50/50 text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all italic leading-relaxed">{{ field.value|default:'' }}</textarea>
+                {% else %}
+                    <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}" id="{{ field.id_for_label }}" value="{{ field.value|default:'' }}" class="w-full px-6 py-4 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-bold focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all italic">
+                {% endif %}
+              </div>
+
+              {% if field.help_text %}
+                <p class="text-[10px] font-medium text-slate-400 mt-1 ml-1">{{ field.help_text }}</p>
+              {% endif %}
+
+              {% if field.errors %}
+                <p class="text-rose-500 text-xs font-bold mt-1 ml-1 uppercase tracking-tighter">{{ field.errors|striptags }}</p>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="pt-10 border-t border-slate-50 flex items-center justify-between gap-4">
+          <a href="{% url 'employer_dashboard' %}" class="px-8 py-4 bg-slate-50 text-slate-500 font-bold rounded-2xl hover:bg-slate-100 transition-colors italic">
+            {% if action == "Edit" %}Discard Changes{% else %}Cancel{% endif %}
+          </a>
+          <button type="submit" class="flex-1 py-4 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 active:scale-95 transition-all text-lg tracking-tight italic">
+            {% if action == "Edit" %}Save Modifications{% else %}Create Job Listing{% endif %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

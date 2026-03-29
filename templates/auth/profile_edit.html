@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile{% endblock %}
+{% block content %}
+<div class="py-16">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="mb-10 flex items-center justify-between">
+      <div>
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-2">Refine Profile</h1>
+        <p class="text-slate-500 font-medium">Keep your professional identity up to date.</p>
+      </div>
+      <a href="{% url 'profile' %}" class="flex items-center gap-2 text-indigo-600 font-bold text-sm hover:text-indigo-700 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Cancel
+      </a>
+    </div>
+
+    <div class="bg-white p-10 md:p-12 rounded-[40px] shadow-2xl shadow-indigo-200/50 border border-slate-100">
+      <form method="post" enctype="multipart/form-data" class="space-y-10">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <!-- Role Selection -->
+        <div class="space-y-4">
+          <label for="{{ form.role.id_for_label }}" class="block text-sm font-black text-slate-900 uppercase tracking-widest ml-1">
+            Current Role
+          </label>
+          <div class="relative group">
+            <select name="role" id="id_role" class="w-full px-5 py-4 rounded-2xl border border-slate-200 bg-slate-50/50 text-slate-900 font-bold focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all appearance-none cursor-pointer">
+                {% for value, label in form.role.field.choices %}
+                    <option value="{{ value }}" {% if form.role.value == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <div class="absolute inset-y-0 right-5 flex items-center pointer-events-none text-slate-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Job Seeker Fields -->
+        <div id="jobseeker-fields" class="space-y-8 pt-8 border-t border-slate-50">
+          <h3 class="text-xl font-bold text-slate-900 flex items-center gap-3">
+              Personal Information
+              <span class="h-px bg-slate-100 flex-1"></span>
+          </h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1.5">
+              <label for="{{ form.full_name.id_for_label }}" class="block text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                Full Name
+              </label>
+              <input type="text" name="full_name" id="id_full_name" value="{{ form.full_name.value|default:'' }}" class="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all">
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="{{ form.phone.id_for_label }}" class="block text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                Phone Number
+              </label>
+              <input type="tel" name="phone" id="id_phone" value="{{ form.phone.value|default:'' }}" class="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all">
+            </div>
+
+            <div class="space-y-1.5 md:col-span-2">
+              <label for="{{ form.location.id_for_label }}" class="block text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                Location
+              </label>
+              <input type="text" name="location" id="id_location" value="{{ form.location.value|default:'' }}" class="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all">
+            </div>
+
+            <div class="md:col-span-2 space-y-4 pt-4" id="resume-container">
+              <label for="{{ form.resume.id_for_label }}" class="block text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                Resume (PDF Preferred)
+              </label>
+              <div class="relative group">
+                  <div class="flex items-center justify-center w-full px-6 py-10 border-2 border-dashed border-slate-200 group-hover:border-indigo-400 rounded-3xl bg-slate-50/50 transition-all cursor-pointer">
+                      <div class="text-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-slate-300 group-hover:text-indigo-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                          </svg>
+                          <div class="mt-4 flex text-sm text-slate-600">
+                              <label class="relative cursor-pointer rounded-md font-bold text-indigo-600 hover:text-indigo-500">
+                                  <span>Upload a file</span>
+                                  <input id="id_resume" name="resume" type="file" class="sr-only">
+                              </label>
+                              <p class="pl-1">or drag and drop</p>
+                          </div>
+                      </div>
+                  </div>
+                  {% if form.resume.value %}
+                    <p class="mt-2 text-xs text-indigo-600 font-bold flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Current: <a href="{{ form.resume.value.url }}" class="underline">{{ form.resume.value.name|truncatechars:30 }}</a>
+                    </p>
+                  {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Employer Fields -->
+        <div id="employer-fields" class="space-y-8 pt-8 border-t border-slate-50">
+          <h3 class="text-xl font-bold text-slate-900 flex items-center gap-3">
+              Company Details
+              <span class="h-px bg-slate-100 flex-1"></span>
+          </h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-1.5">
+              <label for="{{ form.company_name.id_for_label }}" class="block text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                Company Name
+              </label>
+              <input type="text" name="company_name" id="id_company_name" value="{{ form.company_name.value|default:'' }}" class="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all">
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="{{ form.company_website.id_for_label }}" class="block text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                Website URL
+              </label>
+              <input type="url" name="company_website" id="id_company_website" value="{{ form.company_website.value|default:'' }}" class="w-full px-5 py-3.5 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all">
+            </div>
+
+            <div class="md:col-span-2 space-y-1.5 pt-4">
+              <label for="{{ form.company_logo.id_for_label }}" class="block text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                Company Brand Logo
+              </label>
+              <div class="flex items-center gap-6 p-6 bg-slate-50/50 rounded-3xl border border-slate-100">
+                {% if form.company_logo.value %}
+                  <img src="{{ form.company_logo.value.url }}" alt="Logo" class="w-20 h-20 rounded-2xl object-cover border-4 border-white shadow-sm">
+                {% else %}
+                  <div class="w-20 h-20 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 00-2 2z" />
+                      </svg>
+                  </div>
+                {% endif %}
+                <input type="file" name="company_logo" id="id_company_logo" class="text-sm font-bold text-indigo-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100">
+              </div>
+            </div>
+
+            <div class="md:col-span-2 space-y-1.5 pt-4">
+              <label for="{{ form.company_description.id_for_label }}" class="block text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">
+                Company Bio / Mission
+              </label>
+              <textarea name="company_description" id="id_company_description" rows="5" class="w-full px-5 py-4 rounded-3xl border border-slate-200 bg-slate-50/50 text-slate-900 font-medium focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-400 transition-all">{{ form.company_description.value|default:'' }}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center gap-4 pt-10 border-t border-slate-50">
+          <button type="submit" class="px-10 py-4 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 active:scale-95 transition-all">
+            Update Profile
+          </button>
+          <a href="{% url 'profile' %}" class="px-10 py-4 bg-slate-50 text-slate-500 font-bold rounded-2xl hover:bg-slate-100 transition-colors">
+            Discard Changes
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: border-color 0.3s;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  input[type="file"] {
+    padding: 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    width: 100%;
+  }
+</style>
+
+<script>
+  // Show/hide employer fields based on role selection
+  const roleSelect = document.querySelector('select[name="role"]');
+  const jobseekerFields = document.getElementById('jobseeker-fields');
+  const employerFields = document.getElementById('employer-fields');
+
+  function toggleFields() {
+    if (roleSelect.value === 'employer') {
+      employerFields.style.display = 'block';
+      employerFields.style.opacity = '1';
+      employerFields.style.pointerEvents = 'auto';
+      
+      // We don't hide job seeker fields entirely, as full_name/phone/location 
+      // are useful for employers too (contact person info)
+      jobseekerFields.querySelector('legend').textContent = 'Contact Person Information';
+      // Hide resume field for employers
+      const resumeDiv = document.querySelector('label[for*="resume"]').closest('div');
+      if (resumeDiv) resumeDiv.style.display = 'none';
+
+    } else {
+      employerFields.style.display = 'none';
+      
+      jobseekerFields.querySelector('legend').textContent = 'Job Seeker Information';
+      // Show resume field for job seekers
+      const resumeDiv = document.querySelector('label[for*="resume"]').closest('div');
+      if (resumeDiv) resumeDiv.style.display = 'block';
+    }
+  }
+
+  roleSelect.addEventListener('change', toggleFields);
+  toggleFields(); // Initial call
+</script>
+
+{% endblock %}

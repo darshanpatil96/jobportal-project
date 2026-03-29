@@ -1,7 +1,7 @@
-from django.contrib.admin.apps import AdminConfig
+from django.apps import AppConfig
 
 
-class CoreConfig(AdminConfig):
+class CoreConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "core"
     verbose_name = "Job Portal"

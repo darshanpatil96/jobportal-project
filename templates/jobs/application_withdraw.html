@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Withdraw Application{% endblock %}
+
+{% block content %}
+<div class="py-24">
+  <div class="max-w-xl mx-auto px-6">
+    <div class="bg-white p-12 rounded-[40px] shadow-2xl shadow-rose-100/50 border border-slate-100 text-center">
+      <div class="w-20 h-20 bg-rose-50 rounded-3xl flex items-center justify-center mx-auto mb-8 text-rose-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">Withdraw Application?</h1>
+      <p class="text-slate-500 font-medium leading-relaxed mb-10">
+        You are removing your application for <span class="text-slate-900 font-black">"{{ application.job.title }}"</span> at {{ application.job.company }}. This role will no longer appear in your active list.
+      </p>
+      
+      <form method="post" class="flex flex-col gap-4">
+        {% csrf_token %}
+        <button type="submit" class="w-full py-4 bg-rose-600 text-white font-black rounded-2xl hover:bg-rose-700 shadow-xl shadow-rose-100 active:scale-95 transition-all text-lg tracking-tight">
+          Confirm Withdrawal
+        </button>
+        <a href="{% url 'my_applications' %}" class="w-full py-4 bg-slate-50 text-slate-500 font-bold rounded-2xl hover:bg-slate-100 transition-colors">
+          Cancel & Keep Active
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

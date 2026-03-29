@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Companies{% endblock %}
+{% block content %}
+<div class="py-16">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="mb-16 text-center">
+        <p class="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-2">Our Network</p>
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight mb-4">Discover Top Employers</h1>
+        <p class="text-slate-500 font-medium max-w-2xl mx-auto">Explore high-growth startups and established industry leaders hiring elite talent through JobPortal.</p>
+    </div>
+
+    <div class="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mb-20">
+      {% for employer in employers %}
+        <a href="{% url 'company_detail' employer.id %}" class="group block h-full">
+          <div class="h-full bg-white rounded-[32px] border border-slate-100 p-8 shadow-sm hover:shadow-2xl hover:shadow-indigo-100/30 transition-all duration-300 flex flex-col items-center text-center italic relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 bg-indigo-50/30 rounded-bl-[60px] -mr-6 -mt-6"></div>
+            
+            <div class="w-24 h-24 rounded-[28px] bg-slate-50 p-3 mb-6 flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
+              {% if employer.company_logo %}
+                <img src="{{ employer.company_logo.url }}" alt="{{ employer.company_name }}" class="w-full h-full object-contain">
+              {% else %}
+                <span class="text-4xl text-slate-300 font-black tracking-tighter">{{ employer.company_name|slice:":1"|upper }}</span>
+              {% endif %}
+            </div>
+            
+            <h3 class="text-xl font-extrabold text-slate-900 group-hover:text-indigo-600 transition-colors mb-2">
+              {{ employer.company_name }}
+            </h3>
+            
+            {% if employer.location %}
+              <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center justify-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                </svg>
+                {{ employer.location }}
+              </p>
+            {% endif %}
+
+            <div class="mt-auto pt-4 flex items-center gap-1.5 text-xs font-black text-indigo-600 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                View Profile <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+            </div>
+          </div>
+        </a>
+      {% empty %}
+        <div class="col-span-full py-20 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[40px] text-center">
+          <p class="text-slate-500 font-medium">No company profiles found yet.</p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="grid gap-10 md:grid-cols-2">
+      <div class="bg-slate-900 p-10 rounded-[40px] text-white relative overflow-hidden group">
+        <div class="absolute inset-0 opacity-10 mesh-bg"></div>
+        <h2 class="text-2xl font-black mb-4">Why Hire with Us?</h2>
+        <p class="text-slate-400 font-medium leading-relaxed">Access a curated pipeline of high-intent candidates, streamlined evaluation tools, and elite technical talent.</p>
+      </div>
+      <div class="bg-indigo-600 p-10 rounded-[40px] text-white relative overflow-hidden group">
+        <div class="absolute inset-0 opacity-10 mesh-bg"></div>
+        <h2 class="text-2xl font-black mb-4">Industry Leaders</h2>
+        <p class="text-slate-100 font-medium leading-relaxed">From FinTech to AI, join the ecosystem where the world's most innovative companies find their next core team members.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
