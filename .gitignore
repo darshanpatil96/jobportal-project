@@ -40,3 +40,9 @@ venv/
 env/
 ENV/
 .venv/
+
+# Frontend (React)
+node_modules/
+frontend-candidate/dist/
+frontend-employer/dist/
+*.local

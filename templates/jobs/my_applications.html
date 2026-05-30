@@ -69,6 +69,7 @@
                     </td>
                     <td class="px-10 py-6 text-right">
                       <div class="flex items-center justify-end gap-6">
+                        <a href="{% url 'application_timeline' app.id %}" class="text-xs font-black uppercase tracking-widest text-violet-600 hover:text-violet-700 transition-colors">Timeline</a>
                         <a href="{% url 'job_detail' app.job.id %}" class="text-xs font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-700 transition-colors">Details</a>
                         {% if app.status not in 'Rejected,Hired,Withdrawn' %}
                           <a href="{% url 'edit_application' app.id %}" class="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-slate-600 transition-colors">Edit</a>

@@ -1,0 +1,104 @@
+{% extends "employer/base_employer.html" %}
+{% block title %}Employer Dashboard — ARTISAN{% endblock %}
+
+{% block employer_content %}
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+  <div>
+    <p class="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-1">Hiring HQ</p>
+    <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white">Dashboard</h1>
+    <p class="text-slate-500 mt-1">Welcome back{% if profile.company_name %}, {{ profile.company_name }}{% endif %}</p>
+  </div>
+  <a href="{% url 'employer_job_create' %}" class="inline-flex items-center justify-center px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 shadow-lg shadow-indigo-200">
+    + Post New Job
+  </a>
+</div>
+
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+  <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800">
+    <p class="text-xs font-bold text-slate-400 uppercase">Total Jobs</p>
+    <p class="text-3xl font-black text-slate-900 dark:text-white mt-1">{{ stats.total_jobs }}</p>
+  </div>
+  <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800">
+    <p class="text-xs font-bold text-slate-400 uppercase">Applications</p>
+    <p class="text-3xl font-black text-slate-900 dark:text-white mt-1">{{ stats.total_applications }}</p>
+  </div>
+  <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800">
+    <p class="text-xs font-bold text-slate-400 uppercase">Open Jobs</p>
+    <p class="text-3xl font-black text-emerald-600 mt-1">{{ stats.open_jobs }}</p>
+  </div>
+  <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800">
+    <p class="text-xs font-bold text-slate-400 uppercase">Interviews</p>
+    <p class="text-3xl font-black text-violet-600 mt-1">{{ stats.scheduled_interviews }}</p>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-10">
+  <section class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-bold text-slate-900 dark:text-white">Recent Applications</h2>
+      <a href="{% url 'employer_applications' %}" class="text-sm text-indigo-600 font-semibold">View all</a>
+    </div>
+    {% if recent_applications %}
+    <div class="space-y-3">
+      {% for app in recent_applications %}
+      <a href="{% url 'employer_candidate_detail' app.id %}" class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+        <div>
+          <p class="font-semibold text-slate-900 dark:text-white">{{ app.user.username }}</p>
+          <p class="text-xs text-slate-500">{{ app.job.title }}</p>
+        </div>
+        <div class="text-right">
+          {% if app.match_score %}<span class="text-sm font-bold text-indigo-600">{{ app.match_score.overall_score|floatformat:0 }}%</span>{% endif %}
+          <p class="text-[10px] uppercase font-bold text-slate-400">{{ app.status }}</p>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-slate-500 text-sm py-6 text-center">No applications yet. Post a job to get started.</p>
+    {% endif %}
+  </section>
+
+  <section class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-bold text-slate-900 dark:text-white">Upcoming Interviews</h2>
+      <a href="{% url 'employer_interviews' %}" class="text-sm text-indigo-600 font-semibold">View all</a>
+    </div>
+    {% if upcoming_interviews %}
+    <div class="space-y-3">
+      {% for iv in upcoming_interviews %}
+      <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800">
+        <p class="font-semibold text-slate-900 dark:text-white">{{ iv.application.user.username }}</p>
+        <p class="text-xs text-slate-500">{{ iv.application.job.title }} · {{ iv.interview_type }}</p>
+        <p class="text-xs text-indigo-600 font-medium mt-1">{{ iv.scheduled_time|date:"M d, Y H:i" }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-slate-500 text-sm py-6 text-center">No interviews scheduled.</p>
+    {% endif %}
+  </section>
+</div>
+
+<section class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-lg font-bold text-slate-900 dark:text-white">Active Listings</h2>
+    <a href="{% url 'employer_jobs' %}" class="text-sm text-indigo-600 font-semibold">Manage jobs</a>
+  </div>
+  {% if active_jobs %}
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {% for job in active_jobs %}
+    <article class="p-5 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-indigo-200 transition-colors">
+      <h3 class="font-bold text-slate-900 dark:text-white">{{ job.title }}</h3>
+      <p class="text-sm text-slate-500 mt-1">{{ job.app_count }} applicant{{ job.app_count|pluralize }}</p>
+      <div class="flex gap-2 mt-4">
+        <a href="{% url 'employer_job_detail' job.id %}" class="text-xs font-bold text-indigo-600">View</a>
+        <a href="{% url 'employer_applications' %}?job={{ job.id }}" class="text-xs font-bold text-slate-500">Applicants</a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-center text-slate-500 py-8"><a href="{% url 'employer_job_create' %}" class="text-indigo-600 font-bold">Post your first job</a></p>
+  {% endif %}
+</section>
+{% endblock %}

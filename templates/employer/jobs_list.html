@@ -1,0 +1,25 @@
+{% extends "employer/base_employer.html" %}
+{% block title %}My Jobs — ARTISAN Employer{% endblock %}
+{% block employer_content %}
+<div class="flex justify-between items-center mb-8">
+  <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white">My Jobs</h1>
+  <a href="{% url 'employer_job_create' %}" class="px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-sm">+ Post Job</a>
+</div>
+
+<div class="flex gap-2 mb-8 flex-wrap">
+  <a href="{% url 'employer_jobs' %}" class="px-4 py-2 rounded-lg text-sm font-bold {% if not status_filter %}bg-indigo-600 text-white{% else %}bg-white dark:bg-slate-900 text-slate-600 border{% endif %}">All</a>
+  <a href="{% url 'employer_jobs' %}?status=Open" class="px-4 py-2 rounded-lg text-sm font-bold {% if status_filter == 'Open' %}bg-indigo-600 text-white{% else %}bg-white dark:bg-slate-900 text-slate-600 border{% endif %}">Open</a>
+  <a href="{% url 'employer_jobs' %}?status=Closed" class="px-4 py-2 rounded-lg text-sm font-bold {% if status_filter == 'Closed' %}bg-indigo-600 text-white{% else %}bg-white dark:bg-slate-900 text-slate-600 border{% endif %}">Closed</a>
+  <a href="{% url 'employer_jobs' %}?status=Draft" class="px-4 py-2 rounded-lg text-sm font-bold {% if status_filter == 'Draft' %}bg-indigo-600 text-white{% else %}bg-white dark:bg-slate-900 text-slate-600 border{% endif %}">Draft</a>
+</div>
+
+{% if not status_filter or status_filter == 'Open' %}
+{% include "employer/partials/job_table.html" with jobs=open_jobs title="Open" %}
+{% endif %}
+{% if not status_filter or status_filter == 'Closed' %}
+{% include "employer/partials/job_table.html" with jobs=closed_jobs title="Closed" %}
+{% endif %}
+{% if not status_filter or status_filter == 'Draft' %}
+{% include "employer/partials/job_table.html" with jobs=draft_jobs title="Draft" %}
+{% endif %}
+{% endblock %}

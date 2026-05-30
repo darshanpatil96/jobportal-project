@@ -1,0 +1,58 @@
+{% extends "employer/base_employer.html" %}
+{% block title %}Applications — Employer{% endblock %}
+{% block employer_content %}
+<h1 class="text-3xl font-extrabold text-slate-900 dark:text-white mb-8">Applications Hub</h1>
+
+<form method="get" class="flex flex-wrap gap-3 mb-8 p-4 bg-white dark:bg-slate-900 rounded-2xl border">
+  <select name="job" class="rounded-lg border px-3 py-2 text-sm">
+    <option value="">All jobs</option>
+    {% for j in jobs %}
+    <option value="{{ j.id }}" {% if selected_job == j.id|stringformat:"s" %}selected{% endif %}>{{ j.title }}</option>
+    {% endfor %}
+  </select>
+  <select name="status" class="rounded-lg border px-3 py-2 text-sm">
+    <option value="">All stages</option>
+    {% for val, label in status_choices %}
+    <option value="{{ val }}" {% if selected_status == val %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <input type="number" name="min_match" placeholder="Min match %" value="{{ selected_min_match|default:'' }}" class="rounded-lg border px-3 py-2 text-sm w-32" min="0" max="100">
+  <button type="submit" class="px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg text-sm">Filter</button>
+  <a href="{% url 'employer_applications' %}" class="px-4 py-2 text-slate-500 font-bold text-sm">Clear</a>
+</form>
+
+<div class="bg-white dark:bg-slate-900 rounded-2xl border overflow-hidden">
+  <table class="w-full text-left text-sm">
+    <thead class="bg-slate-50 dark:bg-slate-800 text-[10px] uppercase tracking-widest text-slate-500">
+      <tr>
+        <th class="px-6 py-4">Candidate</th>
+        <th class="px-6 py-4">Job</th>
+        <th class="px-6 py-4">Match</th>
+        <th class="px-6 py-4">Stage</th>
+        <th class="px-6 py-4">Applied</th>
+        <th class="px-6 py-4"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+      {% for app in applications %}
+      <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+        <td class="px-6 py-4 font-bold text-slate-900 dark:text-white">{{ app.user.username }}</td>
+        <td class="px-6 py-4 text-slate-600">{{ app.job.title }}</td>
+        <td class="px-6 py-4">
+          {% if app.match_score %}
+          <span class="font-bold text-indigo-600">{{ app.match_score.overall_score|floatformat:0 }}%</span>
+          {% else %}—{% endif %}
+        </td>
+        <td class="px-6 py-4"><span class="text-xs font-bold uppercase text-violet-600">{{ app.status }}</span></td>
+        <td class="px-6 py-4 text-slate-500">{{ app.applied_at|date:"M d, Y" }}</td>
+        <td class="px-6 py-4 text-right">
+          <a href="{% url 'employer_candidate_detail' app.id %}" class="text-indigo-600 font-bold text-xs">Review →</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="px-6 py-12 text-center text-slate-500">No applications match your filters.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

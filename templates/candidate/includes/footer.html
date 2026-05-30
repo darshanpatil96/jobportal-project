@@ -1,0 +1,35 @@
+<!-- Candidate Portal Footer -->
+<footer class="bg-dark text-white pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            <div class="col-span-2 lg:col-span-1">
+                <a href="{% url 'home' %}" class="font-heading font-bold text-2xl">ARTISAN<span class="text-primary">.</span></a>
+                <p class="text-gray-400 mt-4 text-sm">Connecting top talent with visionary brands.</p>
+            </div>
+            <div>
+                <h4 class="font-heading font-semibold text-lg mb-4">Job Seekers</h4>
+                <ul class="space-y-3">
+                    <li><a href="{% url 'job_list' %}" class="text-gray-400 hover:text-white transition-colors text-sm">Find Jobs</a></li>
+                    <li><a href="{% url 'companies' %}" class="text-gray-400 hover:text-white transition-colors text-sm">Companies</a></li>
+                    <li><a href="{% url 'saved_jobs' %}" class="text-gray-400 hover:text-white transition-colors text-sm">Saved Jobs</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-heading font-semibold text-lg mb-4">Resources</h4>
+                <ul class="space-y-3">
+                    <li><a href="{% url 'about' %}" class="text-gray-400 hover:text-white transition-colors text-sm">About</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-heading font-semibold text-lg mb-4">Employers</h4>
+                <ul class="space-y-3">
+                    <li><a href="{% url 'employer_dashboard' %}" class="text-gray-400 hover:text-white transition-colors text-sm">Employer Portal</a></li>
+                    <li><a href="{% url 'employer_job_create' %}" class="text-gray-400 hover:text-white transition-colors text-sm">Post a Job</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 pt-8 text-center">
+            <p class="text-gray-500 text-sm">&copy; 2025 ARTISAN. All rights reserved.</p>
+        </div>
+    </div>
+</footer>

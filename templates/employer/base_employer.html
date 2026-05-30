@@ -1,0 +1,32 @@
+{% extends "shared/base.html" %}
+
+{% block extra_head %}
+<style>
+    /* Employer ATS-specific styles */
+    .ats-card { transition: all 0.2s ease; }
+    .ats-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .pipeline-badge { font-size: 10px; letter-spacing: 0.05em; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-slate-50 dark:bg-slate-950">
+    {% include "employer/includes/sidebar.html" %}
+
+    <main class="lg:ml-64 min-h-screen pt-16 lg:pt-0">
+        <div class="px-4 sm:px-6 lg:px-10 py-8 lg:py-10 max-w-7xl mx-auto">
+            {% if messages %}
+            <div class="space-y-2 mb-6">
+                {% for message in messages %}
+                <div class="px-4 py-3 rounded-xl text-sm font-medium {% if message.tags == 'error' %}bg-red-50 text-red-700 border border-red-100{% elif message.tags == 'success' %}bg-emerald-50 text-emerald-700 border border-emerald-100{% elif message.tags == 'warning' %}bg-amber-50 text-amber-800 border border-amber-100{% else %}bg-indigo-50 text-indigo-700 border border-indigo-100{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% block employer_content %}{% endblock %}
+        </div>
+    </main>
+</div>
+{% endblock %}

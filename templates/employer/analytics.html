@@ -1,0 +1,62 @@
+{% extends "employer/base_employer.html" %}
+{% block title %}Analytics — Employer{% endblock %}
+{% block employer_content %}
+<h1 class="text-3xl font-extrabold text-slate-900 dark:text-white mb-8">Analytics</h1>
+
+<div class="grid md:grid-cols-3 gap-6 mb-10">
+  <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border">
+    <p class="text-xs font-bold text-slate-400 uppercase">Total jobs</p>
+    <p class="text-3xl font-black mt-1">{{ stats.total_jobs }}</p>
+  </div>
+  <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border">
+    <p class="text-xs font-bold text-slate-400 uppercase">Applications</p>
+    <p class="text-3xl font-black mt-1">{{ stats.total_applications }}</p>
+  </div>
+  <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border">
+    <p class="text-xs font-bold text-slate-400 uppercase">Open jobs</p>
+    <p class="text-3xl font-black text-emerald-600 mt-1">{{ stats.open_jobs }}</p>
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-2 gap-8">
+  <section class="bg-white dark:bg-slate-900 rounded-2xl border p-6">
+    <h2 class="font-bold mb-4">Jobs per month</h2>
+    {% for row in jobs_per_month %}
+    <div class="flex justify-between py-2 border-b border-slate-50 text-sm">
+      <span>{{ row.month|date:"F Y" }}</span>
+      <span class="font-bold">{{ row.total }}</span>
+    </div>
+    {% empty %}<p class="text-slate-500 text-sm">No data yet.</p>{% endfor %}
+  </section>
+
+  <section class="bg-white dark:bg-slate-900 rounded-2xl border p-6">
+    <h2 class="font-bold mb-4">Applications by job</h2>
+    {% for row in applications_per_job %}
+    <div class="flex justify-between py-2 border-b text-sm">
+      <span class="truncate pr-4">{{ row.job__title }}</span>
+      <span class="font-bold">{{ row.total }}</span>
+    </div>
+    {% empty %}<p class="text-slate-500 text-sm">No data yet.</p>{% endfor %}
+  </section>
+
+  <section class="bg-white dark:bg-slate-900 rounded-2xl border p-6">
+    <h2 class="font-bold mb-4">By category</h2>
+    {% for row in applications_per_category %}
+    <div class="flex justify-between py-2 border-b text-sm">
+      <span>{{ row.job__category|default:"General" }}</span>
+      <span class="font-bold">{{ row.total }}</span>
+    </div>
+    {% endfor %}
+  </section>
+
+  <section class="bg-white dark:bg-slate-900 rounded-2xl border p-6">
+    <h2 class="font-bold mb-4">Hiring pipeline</h2>
+    {% for row in pipeline_counts %}
+    <div class="flex justify-between py-2 border-b text-sm">
+      <span class="uppercase text-xs font-bold text-violet-600">{{ row.status }}</span>
+      <span class="font-bold">{{ row.total }}</span>
+    </div>
+    {% empty %}<p class="text-slate-500 text-sm">No applications in pipeline.</p>{% endfor %}
+  </section>
+</div>
+{% endblock %}
