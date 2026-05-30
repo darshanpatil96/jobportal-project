@@ -1,0 +1,5 @@
+[33m2ecc7b4[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m Update project
+[33mbbee156[m[33m ([m[1;32mlaser-walnut[m[33m)[m Fix NameError in core/utils.py, standardize navigation, redesign marquee, and fix Apply button
+[33m971b5b8[m refactor: Merge multiple apps into single 'core' app
+[33m3da8004[m Fix CSRF trusted origins
+[33mb372a73[m Remove PyAudio dependency
