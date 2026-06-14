@@ -10,7 +10,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.permissions import IsApplicationOwner, IsCandidate, IsEmailVerified
+from api.permissions import IsApplicationOwner, IsCandidate
 from api.serializers import (
     ApplicationListSerializer,
     JobDetailSerializer,
@@ -101,7 +101,7 @@ class ApplicationDetailView(APIView):
 class ApplyJobView(APIView):
     """Submit a job application."""
 
-    permission_classes = [IsCandidate, IsEmailVerified]
+    permission_classes = [IsCandidate]
 
     def post(self, request):
         job_id = request.data.get("job_id")

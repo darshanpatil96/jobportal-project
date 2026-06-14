@@ -13,7 +13,6 @@ interface User {
   username: string;
   email: string;
   role: 'jobseeker' | 'employer';
-  emailVerified: boolean;
 }
 
 interface AuthState {

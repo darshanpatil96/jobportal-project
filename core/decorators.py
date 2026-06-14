@@ -4,7 +4,6 @@ Role-based view decorators for ARTISAN platform.
 These decorators enforce access control at the view level:
   - @employer_required  → Only employers can access
   - @candidate_required → Only job seekers can access
-  - @verified_required  → Only email-verified users can access
 
 Usage:
     @login_required
@@ -76,24 +75,3 @@ def candidate_required(view_func):
 
     return wrapper
 
-
-def verified_required(view_func):
-    """
-    Restrict view to users with verified email.
-
-    Must be used AFTER @login_required.
-    Redirects unverified users to the verification page.
-    """
-
-    @wraps(view_func)
-    def wrapper(request, *args, **kwargs):
-        profile = getattr(request.user, "userprofile", None)
-        if not profile or not profile.email_verified:
-            messages.warning(
-                request,
-                "Please verify your email to access this feature.",
-            )
-            return redirect(f"{reverse('verify_email')}?next={request.path}")
-        return view_func(request, *args, **kwargs)
-
-    return wrapper

@@ -38,9 +38,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = [
             "id", "user", "role", "full_name", "phone", "location",
             "company_name", "company_website", "company_description",
-            "email_verified",
         ]
-        read_only_fields = ["id", "role", "email_verified"]
+        read_only_fields = ["id", "role"]
 
 
 # ── Jobs ─────────────────────────────────────────────────────────────────────

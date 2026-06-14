@@ -51,7 +51,7 @@ class RegisterView(APIView):
             email=data["email"],
             password=data["password"],
         )
-        UserProfile.objects.create(user=user, role=data["role"])
+        UserProfile.objects.create(user=user, role=data["role"], email_verified=True)
 
         return Response(
             {"id": user.id, "username": user.username, "role": data["role"]},

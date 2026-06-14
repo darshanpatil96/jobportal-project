@@ -81,12 +81,6 @@ class EmployerJobCreateView(APIView):
 
     def post(self, request):
         profile = _get_employer_profile(request.user)
-        if not profile.email_verified:
-            return Response(
-                {"error": "Verify your email before posting jobs."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
         serializer = JobDetailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

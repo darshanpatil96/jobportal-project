@@ -153,16 +153,9 @@
                     <div class="mt-8 space-y-3">
                         {% if user.is_authenticated %}
                             {% if not applied %}
-                              {% if email_verified %}
                             <a href="{% url 'apply_job' job.id %}" class="block w-full text-center bg-white text-primary font-bold py-4 rounded-xl hover:bg-gray-100 transition-colors text-lg">
                                 Apply Now
                             </a>
-                              {% else %}
-                            <a href="{% url 'verify_email' %}?next={% url 'apply_job' job.id %}" class="block w-full text-center bg-amber-400 text-slate-900 font-bold py-4 rounded-xl hover:bg-amber-300 transition-colors text-lg">
-                                Verify Email to Apply
-                            </a>
-                            <p class="text-center text-white/80 text-xs">Check your inbox for the verification link</p>
-                              {% endif %}
                             {% else %}
                             <button disabled class="w-full bg-white/20 text-white font-bold py-4 rounded-xl cursor-not-allowed">
                                 ✓ Already Applied

@@ -100,9 +100,6 @@ def employer_job_detail(request, job_id):
 @employer_required
 def employer_job_create(request):
     profile = _employer_profile_or_404(request.user)
-    if not profile.email_verified:
-        messages.warning(request, "Please verify your email before posting jobs.")
-        return redirect("verify_email")
 
     if request.method == "POST":
         form = JobForm(request.POST)

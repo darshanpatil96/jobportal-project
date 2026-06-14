@@ -117,11 +117,6 @@ def job_detail(request, job_id):
         .order_by("-posted_at")[:4]
     )
 
-    email_verified = False
-    if request.user.is_authenticated:
-        profile = getattr(request.user, "userprofile", None)
-        email_verified = bool(profile and profile.email_verified)
-
     return render(
         request,
         "jobs/job_detail.html",
@@ -130,7 +125,6 @@ def job_detail(request, job_id):
             "applied": applied,
             "is_saved": is_saved,
             "similar_jobs": similar_jobs,
-            "email_verified": email_verified,
             "user_is_employer": is_employer(request.user) if request.user.is_authenticated else False,
         },
     )
@@ -152,13 +146,7 @@ def apply_job(request, job_id):
         )
         return redirect("job_detail", job_id=job.id)
 
-    if not profile or not profile.email_verified:
-        apply_url = reverse("apply_job", kwargs={"job_id": job.id})
-        messages.warning(
-            request,
-            "Please verify your email before applying. Check your inbox or resend below.",
-        )
-        return redirect(f"{reverse('verify_email')}?next={apply_url}")
+
 
     if Application.objects.filter(user=request.user, job=job).exists():
         messages.info(request, "You have already applied to this job.")

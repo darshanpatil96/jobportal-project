@@ -22,11 +22,8 @@ from core.views_public import (  # noqa: F401
 # ── Auth views ───────────────────────────────────────────────────────────────
 from core.views_auth import (  # noqa: F401
     register_user,
-    activate_account,
     login_user,
     logout_user,
-    verify_email,
-    resend_verification,
     notifications_list,
 )
 

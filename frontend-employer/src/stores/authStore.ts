@@ -11,7 +11,6 @@ interface User {
   username: string;
   email: string;
   role: 'employer';
-  emailVerified: boolean;
   companyName: string;
 }
 

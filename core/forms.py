@@ -28,7 +28,7 @@ class UserRegisterForm(UserCreationForm):
         if commit:
             UserProfile.objects.update_or_create(
                 user=user,
-                defaults={"role": role},
+                defaults={"role": role, "email_verified": True},
             )
         return user
 

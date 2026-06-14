@@ -19,7 +19,8 @@ class UserProfile(models.Model):
     company_website = models.URLField(blank=True, default="")
     company_logo = models.ImageField(upload_to="company_logos/", blank=True, null=True)
     company_description = models.TextField(blank=True, null=True)
-    email_verified = models.BooleanField(default=False)
+    # email_verified kept for DB compatibility — always True, verification removed
+    email_verified = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "User Profile"
@@ -308,12 +309,6 @@ class SavedJob(models.Model):
     def __str__(self):
         return f"{self.user.username} saved {self.job.title}"
 
-
-class AccountActivationTokenGenerator(PasswordResetTokenGenerator):
-    pass
-
-
-account_activation_token = AccountActivationTokenGenerator()
 
 
 # ── Workspace models (SaaS architecture) ─────────────────────────────────────

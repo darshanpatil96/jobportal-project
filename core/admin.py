@@ -18,8 +18,8 @@ from .models import (
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ["user", "role", "full_name", "company_name", "email_verified"]
-    list_filter = ["role", "email_verified"]
+    list_display = ["user", "role", "full_name", "company_name"]
+    list_filter = ["role"]
     search_fields = ["user__username", "full_name", "company_name"]
 
 
